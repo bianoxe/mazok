@@ -283,7 +283,7 @@ function renderPlayerStats() {
   bits.push(statCell(statKd(), "к/д"));
   bits.push(statCell(acc + "%", "точность"));
   bits.push(statCell(save.inf ? "∞" : statNum(game.apples), "яблок в кошельке"));
-  bits.push(statCell(statNum(save.rubles), "рублей в кошельке"));
+  bits.push(statCell(statNum(save.rubles), "алмазов в кошельке"));
   bits.push("</div>");
   /* Боссы по редкости: цвета те же, что у карточек боссов (js/bosses.js) */
   bits.push('<div class="stats-rows">');
@@ -308,6 +308,7 @@ function renderPlayerStats() {
    по полю набралось HINT_CLICKS, надпись больше не показываем — остаётся
    сама кнопка, и она всегда понятна */
 function syncPlayHint() {
+  if (typeof knifeBookTourArm === "function") knifeBookTourArm();
   if (!playHint) return;
   const show = (stats.clicks | 0) < HINT_CLICKS;
   if (playHint.hidden !== !show) playHint.hidden = !show;
@@ -330,7 +331,7 @@ function devUiOn() {
   if (host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0" || host === "::1") return true;
   /* ?dev=1 на чужом устройстве больше не открывает чит: сначала нужно получить
      админ-доступ секретным кодом. Иначе любой тестер дописывал ?dev=1 и
-     бесплатно открывал VIP-ножи, ломая экономику рублей. */
+     бесплатно открывал VIP-ножи, ломая экономику алмазов. */
   if (/[?&]dev=1(?:&|$)/.test(location.search)) {
     return !!(typeof Analytics !== "undefined" && Analytics.isAdmin && Analytics.isAdmin());
   }

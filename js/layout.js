@@ -263,7 +263,7 @@ function persist() {
      прогресс/кошелёк/рекорд во время просмотра нельзя */
   if (typeof window !== "undefined" && window.__BH_REPLAY_ACTIVE) return;
   persistPut("bh_apples", String(game.apples | 0));
-  /* новая валюта бета-теста: рубли, потраченное и ник игрока */
+  /* новая валюта бета-теста: алмазы, потраченное и ник игрока */
   persistPut("bh_rubles", String(Math.max(0, save.rubles | 0)));
   persistPut("bh_apple_spent", String(Math.max(0, save.appleSpent | 0)));
   persistPut("bh_rub_spent", String(Math.max(0, save.rubSpent | 0)));

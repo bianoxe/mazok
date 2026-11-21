@@ -121,7 +121,7 @@ function premiumOpen() {
   if (buy) {
     buy.disabled = false;
     const txt = buy.querySelector(".pm-buy-txt");
-    if (txt) txt.textContent = "ОФОРМИТЬ ЗА " + PREMIUM_PRICE_RUB + " ₽";
+    if (txt) txt.textContent = "ОФОРМИТЬ ЗА " + PREMIUM_PRICE_RUB + " 💎";
   }
   try { if (typeof Sfx !== "undefined" && Sfx.ensure) Sfx.ensure(); } catch (err) {}
   const card = modal.querySelector(".pm-card");
@@ -144,13 +144,13 @@ function premiumClose() {
 
 function premiumBuy() {
   if (premiumActive()) return;
-  /* Premium покупается за рубли бета-теста (не за настоящие деньги) */
+  /* Premium покупается за алмазы бета-теста (не за настоящие деньги) */
   if ((save.rubles | 0) < PREMIUM_PRICE_RUB) {
-    if (typeof toast === "function") toast("МАЛО РУБЛЕЙ · НУЖНО " + PREMIUM_PRICE_RUB);
+    if (typeof toast === "function") toast("МАЛО АЛМАЗОВ · НУЖНО " + PREMIUM_PRICE_RUB);
     return;
   }
   if (!spendRubles(PREMIUM_PRICE_RUB)) {
-    if (typeof toast === "function") toast("МАЛО РУБЛЕЙ · НУЖНО " + PREMIUM_PRICE_RUB);
+    if (typeof toast === "function") toast("МАЛО АЛМАЗОВ · НУЖНО " + PREMIUM_PRICE_RUB);
     return;
   }
   save.premium = true;
@@ -167,7 +167,7 @@ function premiumBuy() {
       id: "premium",
       name: "Premium статус",
       cost: PREMIUM_PRICE_RUB,
-      currency: "rub"
+      currency: "diamond"
     });
   }
   const modal = premiumEl("premiumModal");
@@ -195,7 +195,7 @@ function premiumBuyLabel() {
   const buy = premiumEl("premiumBuy");
   if (!buy) return;
   const txt = buy.querySelector(".pm-buy-txt");
-  if (txt) txt.textContent = "ОФОРМИТЬ ЗА " + PREMIUM_PRICE_RUB + " ₽";
+  if (txt) txt.textContent = "ОФОРМИТЬ ЗА " + PREMIUM_PRICE_RUB + " 💎";
 }
 
 /* ---------- фирменный ролик ---------- */

@@ -3,8 +3,8 @@ const LOG_HP = 8;
    тот берёт свой, остальным ровно столько ножей — см. maxHpFor в progress.js */
 const BOSS_HP = 16;
 const PLAYER_LIVES = 3;
-/* ---------- рубли (новая валюта бета-теста) ----------
-   Каждому игроку при первом запуске выдаётся 350 рублей. Заработать их больше
+/* ---------- алмазы (новая валюта бета-теста) ----------
+   Каждому игроку при первом запуске выдаётся 350 алмазов. Заработать их больше
    нельзя: только потратить — на Premium и VIP-ножи. Счётчик живёт в сейве,
    покупки пишутся в статистику (js/analytics.js). */
 const RUBLES_START = 350;
@@ -155,14 +155,14 @@ function readJson(key, fallback) {
 
 const save = {
   apples: +localStorage.getItem("bh_apples") || 0,
-  /* Рубли: при первом запуске — 350. Старые сейвы, где ключа ещё нет,
+  /* Алмазы: при первом запуске — 350. Старые сейвы, где ключа ещё нет,
      получают стартовые 350 один раз. Больше никак не зарабатываются. */
   rubles: (function () {
     const raw = localStorage.getItem("bh_rubles");
     if (raw == null || raw === "") return RUBLES_START;
     return Math.max(0, Math.floor(+raw) || 0);
   })(),
-  /* сколько яблок и рублей потрачено за всё время — для профиля админа */
+  /* сколько яблок и алмазов потрачено за всё время — для профиля админа */
   appleSpent: Math.max(0, Math.floor(+localStorage.getItem("bh_apple_spent") || 0)),
   rubSpent: Math.max(0, Math.floor(+localStorage.getItem("bh_rub_spent") || 0)),
   /* Ник обязателен: без него игра не пускает в забег (js/analytics.js) */
@@ -233,7 +233,7 @@ function playerNick() {
   return save.nick || "Игрок";
 }
 
-/* Единственное место списания рублей: баланс и «потрачено» меняются вместе,
+/* Единственное место списания алмазов: баланс и «потрачено» меняются вместе,
    отрицательным баланс стать не может. */
 function spendRubles(n) {
   const cost = Math.max(0, Math.floor(+n) || 0);

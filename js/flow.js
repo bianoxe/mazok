@@ -180,6 +180,7 @@ function consumeLoadout() {
 
 function startRun() {
   if (state !== "menu" || sheetMode) return;
+  if (typeof knifeBookTourLock === "function" && knifeBookTourLock()) return;
   /* Сколько забегов игрок начал ДО этого: по нему и решаем, есть ли уже
      сравниваемый результат. Первый забег рекорда не даёт вовсе */
   const runsBefore = stats.runs | 0;

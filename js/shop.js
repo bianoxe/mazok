@@ -198,7 +198,7 @@ function buyKnife(id) {
   }
 }
 
-/* VIP-ножи продаются ТОЛЬКО набором: один набор коллекции — 49 ₽.
+/* VIP-ножи продаются ТОЛЬКО набором: один набор коллекции — 49 💎.
    Индивидуальной покупки нет. */
 function buyVipKnifeSetFor(id) {
   const skin = KNIFE_SKINS.find(k => k.id === id);
@@ -241,7 +241,7 @@ function toggleItem(id) {
 }
 
 /* Отдельного «ножа за рекламу» больше нет: VIP-ножи продаются только
-   набором за 49 ₽. Функция удалена намеренно, чтобы её нельзя было вызвать
+   набором за 49 💎. Функция удалена намеренно, чтобы её нельзя было вызвать
    из консоли и открыть один нож бесплатно. */
 
 /* Кнопка в карточке ножа: у открытого — «ИГРАТЬ» (надевает и пускает забег),
@@ -253,7 +253,7 @@ function knifeButton(skin, inShop) {
     return `<button class="card-btn${eq ? "" : " ghost"}" type="button" data-knife-play="${skin.id}">${eq ? "ИГРАТЬ" : "ИГРАТЬ ЭТИМ"}</button>`;
   }
   if (skin.ad && inShop) {
-    return `<button class="card-btn" type="button" data-buy-set="${knifePageOf(skin)}">НАБОР · ${KNIFE_SET_PRICE} ₽</button>`;
+    return `<button class="card-btn" type="button" data-buy-set="${knifePageOf(skin)}">НАБОР · ${KNIFE_SET_PRICE} 💎</button>`;
   }
   if (skin.price && inShop) {
     const poor = game.apples < skin.price;
@@ -276,7 +276,7 @@ function knifeCard(skin, inShop) {
   const blurb = knifeBlurb(skin);
   const meta = owned
     ? (knifeEquipped(skin.id) ? "НАДЕТ" : "ОТКРЫТ")
-    : (skin.price ? (skin.price + " ЯБЛОК") : skin.ad ? ("НАБОР · " + KNIFE_SET_PRICE + " ₽") : "ПОБЕДИ БОССА");
+    : (skin.price ? (skin.price + " ЯБЛОК") : skin.ad ? ("НАБОР · " + KNIFE_SET_PRICE + " 💎") : "ПОБЕДИ БОССА");
   return `<div class="card ${knifeEquipped(skin.id) ? "eq" : ""} ${owned ? "" : "locked"}">
     <canvas data-knife="${skin.id}" width="180" height="500"></canvas>
     <div class="card-name">${skin.name}</div>
@@ -569,8 +569,8 @@ function itemsAction(e) {
   if (skin.ad) {
     const page = knifePageOf(skin);
     const poor = (save.rubles | 0) < KNIFE_SET_PRICE;
-    return `<div class="ipg-price">НАБОР · ₽ ${KNIFE_SET_PRICE}</div>
-      <button class="ipg-buy" type="button" data-buy-set="${page}"${poor ? " disabled" : ""}>${poor ? "МАЛО РУБЛЕЙ" : "КУПИТЬ НАБОР"}</button>`;
+    return `<div class="ipg-price">НАБОР · 💎 ${KNIFE_SET_PRICE}</div>
+      <button class="ipg-buy" type="button" data-buy-set="${page}"${poor ? " disabled" : ""}>${poor ? "МАЛО АЛМАЗОВ" : "КУПИТЬ НАБОР"}</button>`;
   }
   /* Любой нож с ценой покупается за яблоки — и в листе, и в коллекции.
      Раньше условие пускало только страницы classic/junk, из-за чего нож

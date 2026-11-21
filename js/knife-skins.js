@@ -56,7 +56,7 @@ const KNIFE_SKINS = [
      в webp (обрезка по контенту, sharp). Своего рисунка канвас им не рисует:
      есть картинка — js/knife.js кладёт фото в слот (makeKnife). Цена (price)
      открывает нож за яблоки, ad: true — VIP-нож, который продаётся ТОЛЬКО
-     набором за 49 ₽ (js/knife-book.js: buyKnifeSet). */
+     набором за 49 💎 (js/knife-book.js: buyKnifeSet). */
   { id: "serp", name: "СЕРП", price: 180, blurb: "тёмный крюк и зазубрины", src: "images/knifes/serp.webp?v=1", blade: "#6a3a34", edge: "#2a1310", hi: "rgba(255,220,205,0.35)", guard: "#3a2018", handle: "#7a4a40", stripe: "#a06050", pommel: "#2e1a14" },
   { id: "schetka", name: "ЩЁТКА", ad: true, blurb: "зубная щётка с пастой", src: "images/knifes/schetka.webp?v=1", blade: "#7f7fc4", edge: "#2a2a6a", hi: "rgba(255,255,255,0.5)", guard: "#e8c88a", handle: "#c98a5a", stripe: "#5ad0e8", pommel: "#f0d060" },
   { id: "ryba", name: "РЫБА", ad: true, mini: true, blurb: "золотая рыба целиком", src: "images/knifes/vip/ryba.webp", blade: "#e8a636", edge: "#8a5a10", hi: "rgba(255,240,200,0.45)", guard: "#c8871f", handle: "#f0c968", stripe: "#fff0c0", pommel: "#a86a12" },

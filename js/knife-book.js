@@ -26,7 +26,7 @@ const BOOK_FRAMES = {
   space: "../images/knifes/VIP/космос/Золотая рамка в космической галактике.png",
   memes: "../images/knifes/VIP/мемные/Яркая мем-рамка с коронованным смайлом.png"
 };
-/* Цена набора коллекции: одна на всю рамку, в рублях. Реальной оплаты в игре
+/* Цена набора коллекции: одна на всю рамку, в алмазах. Реальной оплаты в игре
    нет — как и у наборов валюты в магазине, кнопка сразу открывает все ножи. */
 const KNIFE_SET_PRICE = 49;
 
@@ -197,8 +197,21 @@ const bookUnlockPriceEl = document.getElementById("bookUnlockPrice");
 const bookActEl = document.getElementById("bookAct");
 const bookProgressEl = document.getElementById("bookProgress");
 const bookEmptyEl = document.getElementById("bookEmpty");
+const bookTourEl = document.getElementById("bookTour");
+const bookTourPctEl = document.getElementById("bookTourPct");
+const knivesArrowEl = document.getElementById("knivesArrow");
+const itemsBtnEl = document.getElementById("itemsBtn");
+const menuTourDimEl = document.getElementById("menuTourDim");
+const bookTourArrowEl = document.getElementById("bookTourArrow");
+const menuDockEl = document.querySelector("#menu .menu-dock");
+
+const KB_CLICKED_KEY = "bh_kb_clicked";
+const KB_TOUR_KEY = "bh_kb_tour_done";
 
 var bookIsOpen = false;
+let bookTour = false;
+let kbClickedMem = false;
+let kbTourDoneMem = false;
 let bookSel = "";
 let bookStats = { all: 0, own: 0, lock: 0 };
 let bookSections = [];
@@ -208,6 +221,85 @@ function bookEsc(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
   });
+}
+
+/* ---------- обучение коллекции ----------
+   После 3 забегов игроку, который ни разу не открывал «Ножи», показываем
+   стрелку. Клик по кнопке открывает коллекцию в режиме обучения: крестик
+   скрыт, закрыть нельзя, пока лента не прокручена до конца. */
+function kbGet(key) {
+  try { return localStorage.getItem(key); } catch (err) { return null; }
+}
+function kbSet(key, val) {
+  try { localStorage.setItem(key, val); } catch (err) {}
+}
+function knifeBookClickedBefore() {
+  if (kbClickedMem) return true;
+  return kbGet(KB_CLICKED_KEY) === "1";
+}
+function knifeBookTourSeen() {
+  if (kbTourDoneMem) return true;
+  return kbGet(KB_TOUR_KEY) === "1";
+}
+function knifeBookTourPending() {
+  if (knifeBookTourSeen() || knifeBookClickedBefore()) return false;
+  const runs = typeof stats !== "undefined" ? (stats.runs | 0) : 0;
+  return runs >= 3;
+}
+function knifeBookTourActive() {
+  return !!bookTour;
+}
+function knifeBookTourArm() {
+  const pending = knifeBookTourPending();
+  const show = pending && (typeof state === "undefined" || state === "menu");
+  if (knivesArrowEl) knivesArrowEl.hidden = !show;
+  if (itemsBtnEl) itemsBtnEl.classList.toggle("tour-hint", show);
+  if (menuTourDimEl) menuTourDimEl.hidden = !show;
+  if (menuDockEl) menuDockEl.style.zIndex = show ? "57" : "";
+  return show;
+}
+function knifeBookTourLock() {
+  if (!knifeBookTourPending()) return false;
+  knifeBookTourArm();
+  if (itemsBtnEl) {
+    itemsBtnEl.classList.remove("tour-bump");
+    void itemsBtnEl.offsetWidth;
+    itemsBtnEl.classList.add("tour-bump");
+  }
+  if (typeof toast === "function") toast("СНАЧАЛА ЗАГЛЯНИ В НОЖИ");
+  return true;
+}
+function knifeBookMarkClicked() {
+  kbClickedMem = true;
+  kbSet(KB_CLICKED_KEY, "1");
+  knifeBookTourArm();
+}
+function knifeBookDockOpen() {
+  const tour = knifeBookTourPending();
+  knifeBookMarkClicked();
+  openKnifeBook(tour);
+}
+function bookTourSync() {
+  if (!bookTour || !bookScroll) return;
+  const max = Math.max(0, bookScroll.scrollHeight - bookScroll.clientHeight);
+  const pct = max > 0 ? Math.min(100, Math.round((bookScroll.scrollTop / max) * 100)) : 0;
+  if (bookTourPctEl) bookTourPctEl.textContent = pct + "%";
+  if (max > 0 && bookScroll.scrollTop + bookScroll.clientHeight >= bookScroll.scrollHeight - 28) {
+    bookTourFinish();
+  }
+}
+function bookTourFinish() {
+  if (!bookTour) return;
+  bookTour = false;
+  kbTourDoneMem = true;
+  kbSet(KB_TOUR_KEY, "1");
+  kbSet(KB_CLICKED_KEY, "1");
+  if (bookOverlay) bookOverlay.classList.remove("tour-lock");
+  if (bookTourEl) bookTourEl.hidden = true;
+  if (bookTourArrowEl) bookTourArrowEl.hidden = true;
+  if (bookCloseBtn) bookCloseBtn.hidden = false;
+  knifeBookTourArm();
+  if (typeof toast === "function") toast("ГОТОВО · МОЖЕШЬ ЗАКРЫТЬ");
 }
 
 /* Все секции коллекции в человеческом порядке: редкости идут друг за другом,
@@ -349,8 +441,8 @@ function bookSectionHtml(section, entries) {
     const done = owned >= total;
     const buy = `<button class="bk-set-buy${done ? " done" : ""}" type="button" ` +
       `data-buy-set="${section.id}"${done ? " disabled" : ""} ` +
-      `aria-label="${done ? "Коллекция уже куплена" : "Открыть всю коллекцию за " + KNIFE_SET_PRICE + " рублей"}">` +
-      `<span class="bk-set-buy-price">${done ? "КУПЛЕНО" : KNIFE_SET_PRICE + " ₽"}</span>` +
+      `aria-label="${done ? "Коллекция уже куплена" : "Открыть всю коллекцию за " + KNIFE_SET_PRICE + " алмазов"}">` +
+      `<span class="bk-set-buy-price">${done ? "КУПЛЕНО" : KNIFE_SET_PRICE + " 💎"}</span>` +
       `</button>`;
     /* Блёстки и бегущий блик — это 48 анимированных элементов на витрину.
        Ради стабильного FPS (и на ПК, и на телефоне) не создаём их вовсе:
@@ -612,8 +704,9 @@ function knifeBookOpened() {
   return bookIsOpen;
 }
 
-function openKnifeBook() {
+function openKnifeBook(forceTour) {
   if (!bookOverlay) return;
+  bookTour = !!forceTour;
   Sfx.ensure();
   if (typeof sheetMode !== "undefined" && sheetMode) closeSheet();
   bookReturnFocus = document.activeElement;
@@ -633,6 +726,18 @@ function openKnifeBook() {
   } catch (err) {}
   bookSel = "";
   bookTouchMode(true);
+  if (bookTour) {
+    bookOverlay.classList.add("tour-lock");
+    if (bookCloseBtn) bookCloseBtn.hidden = true;
+    if (bookTourEl) bookTourEl.hidden = false;
+    if (bookTourArrowEl) bookTourArrowEl.hidden = false;
+    if (bookTourPctEl) bookTourPctEl.textContent = "0%";
+  } else {
+    bookOverlay.classList.remove("tour-lock");
+    if (bookCloseBtn) bookCloseBtn.hidden = false;
+    if (bookTourEl) bookTourEl.hidden = true;
+    if (bookTourArrowEl) bookTourArrowEl.hidden = true;
+  }
   bookRender();
   bookPaintLazy(bookScroll);
   bookWarmSets(bookScroll);
@@ -645,11 +750,13 @@ function openKnifeBook() {
   bookOverlay.classList.add("in");
   const saved = Number(localStorage.getItem("bh_book_scroll"));
   requestAnimationFrame(() => {
-    if (bookScroll) bookScroll.scrollTop = Number.isFinite(saved) && saved > 0 ? saved : 0;
+    if (bookScroll) bookScroll.scrollTop = bookTour ? 0 : (Number.isFinite(saved) && saved > 0 ? saved : 0);
+    if (bookTour) requestAnimationFrame(bookTourSync);
   });
 }
 
 function closeKnifeBook() {
+  if (bookTour) return;
   if (!bookOverlay || !bookIsOpen) return;
   bookIsOpen = false;
   bookCancelMotion();
@@ -692,8 +799,8 @@ function knifeBookRefresh() {
 }
 
 /* ---------- покупка набора коллекции ----------
-   Набор VIP-ножей стоит KNIFE_SET_PRICE рублей — это реальная трата новой
-   валюты (рублей), а не бесплатная выдача. */
+   Набор VIP-ножей стоит KNIFE_SET_PRICE алмазов — это реальная трата новой
+   валюты (алмазов), а не бесплатная выдача. */
 function buyKnifeSet(page) {
   const entries = itemsPageEntries(page);
   if (!entries.length) return;
@@ -702,11 +809,11 @@ function buyKnifeSet(page) {
     return;
   }
   if ((save.rubles | 0) < KNIFE_SET_PRICE) {
-    toast("МАЛО РУБЛЕЙ · НУЖНО " + KNIFE_SET_PRICE);
+    toast("МАЛО АЛМАЗОВ · НУЖНО " + KNIFE_SET_PRICE);
     return;
   }
   if (!spendRubles(KNIFE_SET_PRICE)) {
-    toast("МАЛО РУБЛЕЙ · НУЖНО " + KNIFE_SET_PRICE);
+    toast("МАЛО АЛМАЗОВ · НУЖНО " + KNIFE_SET_PRICE);
     return;
   }
   const added = [];
@@ -727,7 +834,7 @@ function buyKnifeSet(page) {
       id: String(page),
       name: "Набор " + (typeof ITEM_PAGE_NAMES !== "undefined" ? (ITEM_PAGE_NAMES[page] || page) : page),
       cost: KNIFE_SET_PRICE,
-      currency: "rub",
+      currency: "diamond",
       count: added.length
     });
   }
@@ -761,7 +868,7 @@ function bookPick(id) {
   }
   /* Закрытый: одно понятное действие по клику, без скрытых панелей. */
   if (skin.ad) {
-    /* VIP-ножи покупаются только набором за 49 ₽ кнопкой под коллекцией.
+    /* VIP-ножи покупаются только набором за 49 💎 кнопкой под коллекцией.
        Клик по одному неразблокированному VIP-ножу ничего не делает. */
     return;
   }
@@ -979,6 +1086,7 @@ let bookAnimSettle = 0;
 if (bookScroll) {
   bookScroll.addEventListener("scroll", function () {
     if (!bookIsOpen) return;
+    if (bookTour) bookTourSync();
     if (bookAnimSettle) clearTimeout(bookAnimSettle);
     bookAnimSettle = setTimeout(function () {
       bookAnimSettle = 0;
@@ -1330,7 +1438,7 @@ if (bookScroll) {
       e.stopPropagation();
       return;
     }
-    /* «49 ₽» под VIP-рамкой лежит в ленте, а не в панели действия. */
+    /* «49 💎» под VIP-рамкой лежит в ленте, а не в панели действия. */
     const setBtn = e.target.closest("[data-buy-set]");
     if (setBtn) {
       e.stopPropagation();
@@ -1419,6 +1527,9 @@ function bookTurn(dir) {
 
 bookRndRender();
 randomUnlockRender();
+
+/* Игрок уже мог набрать 3 забега в прошлой сессии — стрелка появится сразу. */
+setTimeout(function () { knifeBookTourArm(); }, 1200);
 
 /* Отладка из адресной строки: ...#booktest открывает коллекцию — так снимают
    headless-проверки. Ждём, пока игра закончит загрузку и сама откроет меню:

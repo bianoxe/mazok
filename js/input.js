@@ -108,7 +108,8 @@ if (rewardsBtn) {
 itemsBtn.addEventListener("click", e => {
   e.stopPropagation();
   /* «Ножи» — книга на столе во весь экран (js/knife-book.js), не лист */
-  if (typeof openKnifeBook === "function") openKnifeBook();
+  if (typeof knifeBookDockOpen === "function") knifeBookDockOpen();
+  else if (typeof openKnifeBook === "function") openKnifeBook();
   else openSheet("items");
 });
 /* «Магазин» — отдельная сцена с наборами валюты (js/shop-scene.js) */
@@ -265,6 +266,7 @@ window.addEventListener("keydown", e => {
       if (typeof bookScrollBy === "function") bookScrollBy(1);
     } else if (e.code === "Home" || e.code === "End") {
       e.preventDefault();
+      if (typeof knifeBookTourActive === "function" && knifeBookTourActive()) return;
       if (typeof bookScrollEdge === "function") bookScrollEdge(e.code === "Home");
     }
     return;
@@ -407,7 +409,7 @@ function paintReset(p) {
 
 function resetProgress() {
   game.apples = 0;
-  /* рубли «с нуля»: снова стартовые 350. «Потрачено за всё время» НЕ обнуляем:
+  /* алмазы «с нуля»: снова стартовые 350. «Потрачено за всё время» НЕ обнуляем:
      это статистика профиля, а не баланс. История покупок тоже остаётся. */
   save.rubles = RUBLES_START;
   save.freeAppleAt = 0;

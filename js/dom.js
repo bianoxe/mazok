@@ -22,7 +22,7 @@ const menuStats = document.getElementById("menuStats");
 /* единственный счётчик яблок на всю игру (index.html: #globalApples) */
 const globalAppleVal = document.getElementById("globalAppleVal");
 const globalAppleIco = document.getElementById("globalAppleIco");
-/* рубли бета-теста: вторая валюта, постоянный счётчик под яблоками */
+/* алмазы бета-теста: вторая валюта, постоянный счётчик под яблоками */
 const globalRubleVal = document.getElementById("globalRubleVal");
 const lvlVal = document.getElementById("lvlVal");
 const bestVal = document.getElementById("bestVal");

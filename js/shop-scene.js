@@ -28,7 +28,7 @@ function renderShopGrid() {
       (s.best ? '<span class="shop-offer-best">ВЫГОДНО</span>' : "") +
       '<span class="shop-offer-ico" aria-hidden="true">' + ico + '</span>' +
       '<span class="shop-offer-amount">' + s.amount + '</span>' +
-      '<span class="shop-offer-price">' + s.price + ' ₽</span>' +
+      '<span class="shop-offer-price">' + s.price + ' 💎</span>' +
     '</button>'
   ).join("");
 }
@@ -77,7 +77,7 @@ function shopBuy(amount, price) {
       id: String(n),
       name: n + " яблок",
       cost: Math.max(0, Math.floor(+price) || 0),
-      currency: "demo_rub"
+      currency: "demo_diamond"
     });
   }
 }

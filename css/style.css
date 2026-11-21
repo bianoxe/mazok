@@ -1592,6 +1592,151 @@ canvas#c {
   box-shadow: 0 2px 6px rgba(160, 60, 34, 0.4);
 }
 .dock-badge[hidden] { display: none; }
+/* Стрелка-подсказка над «Ножи»: после 3 забегов ведёт в коллекцию */
+.dock-arrow {
+  position: absolute;
+  left: 50%;
+  top: calc(-62px * var(--mu));
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: calc(56px * var(--mu));
+  height: calc(56px * var(--mu));
+  border: calc(2px * var(--mu)) solid #fff3bf;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff1b0, #ffd45a 45%, #e89010);
+  color: #3a2206;
+  font-size: calc(32px * var(--mu));
+  font-weight: 900;
+  line-height: 1;
+  box-shadow:
+    0 0 0 calc(5px * var(--mu)) rgba(255, 212, 90, 0.22),
+    0 0 calc(30px * var(--mu)) rgba(255, 190, 60, 0.65),
+    0 calc(8px * var(--mu)) calc(18px * var(--mu)) rgba(0, 0, 0, 0.4);
+  animation: dockArrowBounce 780ms cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  pointer-events: none;
+}
+.dock-arrow::before {
+  content: "ЖМИ СЮДА";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px * var(--mu));
+  transform: translateX(-50%);
+  padding: calc(5px * var(--mu)) calc(11px * var(--mu));
+  border: calc(1px * var(--mu)) solid rgba(255, 212, 90, 0.85);
+  border-radius: 999px;
+  background: #241506;
+  color: #ffd45a;
+  font-family: var(--font-ui);
+  font-size: calc(11px * var(--mu));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 0 0 calc(16px * var(--mu)) rgba(255, 190, 60, 0.55);
+}
+.dock-arrow[hidden] { display: none; }
+@keyframes dockArrowBounce {
+  0%, 100% { transform: translate(-50%, 0) scale(1); }
+  50% { transform: translate(-50%, calc(11px * var(--mu))) scale(1.06); }
+}
+.dock-btn.tour-hint {
+  background: radial-gradient(70% 80% at 50% 30%, rgba(255, 212, 90, 0.3), rgba(255, 212, 90, 0) 75%);
+  box-shadow:
+    0 0 0 calc(4px * var(--mu)) rgba(255, 212, 90, 0.75),
+    0 0 calc(38px * var(--mu)) rgba(255, 190, 60, 0.65);
+}
+.dock-btn.tour-hint .dock-ico {
+  animation: tourIcoPulse 780ms ease-in-out infinite;
+  filter: drop-shadow(0 0 calc(10px * var(--mu)) rgba(255, 212, 90, 0.9));
+}
+@keyframes tourIcoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+/* Затемнение меню, пока игрок не открыл «Ножи»: фокус на нижней кнопке */
+.menu-tour-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 56;
+  pointer-events: none;
+  background: radial-gradient(ellipse 240px 190px at 50% 95%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.16) 55%, rgba(4, 9, 11, 0.74) 100%);
+}
+.menu-tour-dim[hidden] { display: none; }
+.dock-btn.tour-bump { animation: dockBump 420ms ease; }
+@keyframes dockBump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(calc(-5px * var(--mu))) scale(1.06); }
+  65% { transform: translateY(calc(2px * var(--mu))) scale(0.98); }
+}
+/* Верхняя плашка принудительного листания коллекции */
+.kb-tour {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 clamp(10px, 1.4vw, 18px) 8px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 212, 90, 0.5);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 212, 90, 0.22), rgba(255, 170, 40, 0.1));
+  color: #ffe6a8;
+  font-family: var(--font-ui);
+  font-size: clamp(10px, 1vw, 12px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 0 18px rgba(255, 190, 60, 0.18);
+}
+.kb-tour[hidden] { display: none; }
+.kb-tour-pct {
+  color: #ffd45a;
+  font-variant-numeric: tabular-nums;
+}
+#book.tour-lock .kb-close { display: none; }
+#book.tour-lock .kb-dock { display: none; }
+/* Большая стрелка внизу коллекции: пока не долистал — она тут */
+.kb-tour-down {
+  position: absolute;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translateX(-50%);
+  animation: kbDownBounce 820ms ease-in-out infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 0 14px rgba(255, 190, 60, 0.75));
+}
+.kb-tour-down[hidden] { display: none; }
+.kb-tour-down-cap {
+  padding: 8px 16px;
+  border: 2px solid #a67c17;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff1b0, #ffd45a);
+  color: #2a1a08;
+  font-family: var(--font-ui);
+  font-size: clamp(11px, 1.1vw, 14px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 0 4px 0 #7d5b0f, 0 0 22px rgba(255, 190, 60, 0.5);
+}
+.kb-tour-down-tip {
+  color: #ffd45a;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 0.8;
+  text-shadow: 0 0 18px rgba(255, 190, 60, 0.85), 0 3px 0 #7d5b0f;
+}
+@keyframes kbDownBounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 10px); }
+}
 /* галочка «бесконечные жизни» в плитке: зелёный кружок в углу, как чекбокс.
    Состояние рисует js/input.js: paintInfLives. */
 .dock-chk {
@@ -4497,7 +4642,7 @@ canvas#c {
   animation-play-state: paused;
   pointer-events: none;
 }
-/* Блик по кнопке «49 ₽» гоняем только у витрины в кадре: иначе восемь
+/* Блик по кнопке «49 💎» гоняем только у витрины в кадре: иначе восемь
    постоянных анимаций висят даже там, куда игрок не смотрит. */
 .kb-vip.anim .bk-set-buy::before { animation-play-state: running; }
 @keyframes bkSetShine {

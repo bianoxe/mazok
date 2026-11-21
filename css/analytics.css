@@ -3,7 +3,7 @@
    Отдельный файл, чтобы не трогать огромный style.css.
    ============================================================ */
 
-/* ---------- вторая валюта: рубли ---------- */
+/* ---------- вторая валюта: алмазы ---------- */
 .global-rubles {
   position: absolute;
   top: calc(78px + var(--safe-top, 0px) + var(--crop-y, 0px));
@@ -25,14 +25,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.1em;
-  height: 1.1em;
-  border-radius: 50%;
-  font-size: 22px;
-  font-weight: 900;
-  color: #0d3a44;
-  background: radial-gradient(circle at 35% 30%, #ffffff, #9fd7e2 60%, #63aebb);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 1px 3px rgba(0, 0, 0, .25);
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  font-size: 26px;
+  line-height: 1;
+  background: none;
+  box-shadow: none;
+  filter: drop-shadow(0 0 8px rgba(110, 220, 255, 0.7));
 }
 .global-ruble-val {
   font-size: clamp(18px, 1.7vw, 24px);
