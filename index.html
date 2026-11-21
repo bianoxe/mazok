@@ -139,8 +139,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap"
         rel="stylesheet" media="print" onload="this.media='all';this.onload=null" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet" /></noscript>
-  <link rel="stylesheet" href="css/style.css?v=premium1" />
-  <link rel="stylesheet" href="css/analytics.css?v=reviews3" />
+  <link rel="stylesheet" href="css/style.css?v=diamonds2" />
+  <link rel="stylesheet" href="css/analytics.css?v=diamonds1" />
   <!-- Жёсткая страховка цвета нижнего меню: даже если css/style.css придёт
        из старого кэша, панель и кнопки не будут чёрными. -->
   <style id="menuColorFix">
@@ -196,10 +196,10 @@
     <span class="global-apple-ico" id="globalAppleIco" aria-hidden="true"></span>
     <span class="global-apple-val" id="globalAppleVal">0</span>
   </div>
-  <!-- Вторая валюта бета-теста: рубли. Выдаются один раз (350), тратятся на
+  <!-- Вторая валюта бета-теста: алмазы. Выдаются один раз (350), тратятся на
        Premium и VIP-ножи. -->
-  <div id="globalRubles" class="global-rubles" title="Рубли">
-    <span class="global-ruble-ico" aria-hidden="true">₽</span>
+  <div id="globalRubles" class="global-rubles" title="Алмазы">
+    <span class="global-ruble-ico" aria-hidden="true">💎</span>
     <span class="global-ruble-val" id="globalRubleVal">350</span>
   </div>
   <div id="hud">
@@ -267,6 +267,7 @@
       <div class="loadout" id="loadoutBar"></div>
     </div>
     <!-- Нижняя панель: только ежедневные вкладки. -->
+    <div class="menu-tour-dim" id="menuTourDim" hidden aria-hidden="true"></div>
     <div class="menu-dock" role="navigation" aria-label="Меню">
       <button class="dock-btn" id="rewardsBtn" type="button" title="Награды" aria-label="Награды">
         <span class="dock-ico" aria-hidden="true">🎁</span>
@@ -277,6 +278,7 @@
         <span class="dock-ico" aria-hidden="true">🔪</span>
         <span class="dock-cap">Ножи</span>
         <span class="dock-badge" id="itemsBadge" hidden></span>
+        <span class="dock-arrow" id="knivesArrow" hidden aria-hidden="true">▼</span>
       </button>
       <button class="dock-btn" id="lbBtn" type="button" title="Таблица лидеров" aria-label="Таблица лидеров">
         <span class="dock-ico" aria-hidden="true">🏅</span>
@@ -447,6 +449,10 @@
         </div>
         <button class="kb-close" id="bookClose" type="button" aria-label="Закрыть коллекцию">✕</button>
       </div>
+      <div class="kb-tour" id="bookTour" hidden>
+        <span class="kb-tour-txt">ПРОЛИСТАЙ НОЖИ ДО КОНЦА</span>
+        <span class="kb-tour-pct" id="bookTourPct">0%</span>
+      </div>
       <div class="kb-scroll" id="bookScroll"></div>
       <div class="kb-empty" id="bookEmpty" hidden>Ничего не найдено</div>
       <!-- нижняя вывеска: две большие кнопки, ничего лишнего -->
@@ -462,6 +468,10 @@
           <span class="kb-tool-flag" id="bookRndFlag" hidden>ВКЛ</span>
         </button>
       </div>
+    </div>
+    <div class="kb-tour-down" id="bookTourArrow" hidden aria-hidden="true">
+      <span class="kb-tour-down-cap">ЛИСТАЙ ВНИЗ</span>
+      <span class="kb-tour-down-tip">▼</span>
     </div>
   </div>
   <!-- Окно нового ножа: только нож, надпись, «Применить» и крестик. -->
@@ -564,7 +574,7 @@
       </div>
       <div class="pm-note">Возрождение за рекламу остаётся</div>
       <button class="pm-buy" id="premiumBuy" type="button">
-        <span class="pm-buy-txt">ОФОРМИТЬ ЗА 149 ₽</span>
+        <span class="pm-buy-txt">ОФОРМИТЬ ЗА 149 💎</span>
         <span class="pm-buy-sub">PREMIUM</span>
       </button>
       <div class="pm-fine">Демо-оплата · подписка активируется сразу</div>
@@ -757,16 +767,16 @@
 <script src="js/assets.js?v=final5"></script>
   <script src="js/layout.js?v=final5"></script>
   <script src="js/hud.js?v=release1"></script>
-  <script src="js/stats.js?v=final5"></script>
+  <script src="js/stats.js?v=diamonds1"></script>
   <script src="js/leaderboard.js?v=premium1"></script>
-  <script src="js/progress.js?v=final5"></script>
+  <script src="js/progress.js?v=demo22"></script>
   <script src="js/knife-unlock.js?v=release1"></script>
   <script src="js/boss-spin.js?v=final5"></script>
   <script src="js/hit.js?v=final5"></script>
   <script src="js/cracks.js?v=final5"></script>
   <script src="js/fx.js?v=final5"></script>
-  <script src="js/flow.js?v=premium9"></script>
-  <script src="js/sim.js?v=final5"></script>
+  <script src="js/flow.js?v=demo22"></script>
+  <script src="js/sim.js?v=demo22"></script>
   <script src="js/boss-sting.js?v=final5"></script>
   <script src="js/boss-victory.js?v=final5"></script>
   <script src="js/draw-knife.js?v=final5"></script>
@@ -776,18 +786,18 @@
   <script src="js/draw-hud.js?v=final5"></script>
   <script src="js/frame.js?v=final5"></script>
   <script src="js/mobile.js?v=final5"></script>
-  <script src="js/shop.js?v=final5"></script>
+  <script src="js/shop.js?v=diamonds1"></script>
   <script src="js/rewards.js?v=final5"></script>
-  <script src="js/shop-scene.js?v=final5"></script>
-  <script src="js/knife-book.js?v=final7"></script>
-  <script src="js/input.js?v=final5"></script>
+  <script src="js/shop-scene.js?v=diamonds1"></script>
+  <script src="js/knife-book.js?v=diamonds2"></script>
+  <script src="js/input.js?v=booktour1"></script>
   <script src="js/exit.js?v=final5"></script>
   <script src="js/yandex.js?v=final5"></script>
-  <script src="js/premium.js?v=stats2"></script>
+  <script src="js/premium.js?v=diamonds1"></script>
   <!-- Аналитика игры. Загружается последней: к этому моменту есть все
        игровые функции, которые она оборачивает. -->
-  <script src="js/analytics.js?v=reviews2"></script>
-  <script src="js/replay.js?v=final5"></script>
+  <script src="js/analytics.js?v=demo22"></script>
+  <script src="js/replay.js?v=demo22"></script>
   <!-- ============ НАСТРОЙКИ КЛАВИШ БРОСКА (кнопка ⚙) ============
        Сама кнопка ⚙ спрятана: её место заняла плитка «Клавиши» в панели
        «Ещё» (js/input.js: keysBtn → kkeysBtn.click()). Панель осталась здесь
