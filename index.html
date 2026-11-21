@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="referrer" content="no-referrer" />
+  <!-- ---------- ЭКРАН ЗАГРУЗКИ: стили ----------
+       Инлайн, чтобы заставка нарисовалась до запроса css/style.css и без шрифтов.
+       Всё (бревно, нож, щепки, полоска) — CSS: ноль байтов картинок. -->
+  <style id="bootCss">
+    #boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:clamp(14px,2.2vmin,24px);overflow:hidden;
+      padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));
+      background:radial-gradient(120% 92% at 50% -12%,#2e5a5c 0%,#1b3538 46%,#0a1416 100%);
+      font-family:"Manrope","Segoe UI",system-ui,sans-serif;color:#ffeccd;
+      transition:opacity .38s ease,transform .38s ease}
+    #boot.is-done{opacity:0;transform:scale(1.06);pointer-events:none}
+    #boot::after{content:"";position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(58% 38% at 50% 36%,rgba(255,166,70,.18),transparent 70%);
+      animation:bootGlow 3.4s ease-in-out infinite}
+    .boot-shards{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+    .boot-shards i{position:absolute;width:7px;height:2px;border-radius:2px;background:rgba(255,216,162,.45);
+      animation:bootShard 6.5s linear infinite}
+    .boot-shards i:nth-child(1){left:9%;top:82%}
+    .boot-shards i:nth-child(2){left:24%;top:92%;animation-delay:1.4s}
+    .boot-shards i:nth-child(3){left:41%;top:88%;animation-delay:.7s}
+    .boot-shards i:nth-child(4){left:63%;top:94%;animation-delay:2.1s}
+    .boot-shards i:nth-child(5){left:78%;top:84%;animation-delay:.3s}
+    .boot-shards i:nth-child(6){left:90%;top:90%;animation-delay:3s}
+    .boot-mid{position:relative;display:flex;flex-direction:column;align-items:center;
+      gap:clamp(12px,2vmin,20px);width:min(92vw,460px)}
+    .boot-logo{position:relative;width:clamp(160px,36vmin,240px);height:clamp(108px,25vmin,170px);display:grid;place-items:center}
+    .boot-log{position:relative;width:clamp(118px,27vmin,182px);height:clamp(48px,10.6vmin,72px);border-radius:999px;
+      background:linear-gradient(180deg,#c78a55 0%,#a06a35 34%,#7a4a22 68%,#513017 100%);
+      box-shadow:inset 0 3px 0 rgba(255,225,180,.38),inset 0 -8px 12px rgba(0,0,0,.5),0 12px 26px rgba(0,0,0,.5);
+      transform-origin:50% 62%;animation:bootSway 2.9s ease-in-out infinite}
+    .boot-log::before{content:"";position:absolute;right:-1%;top:5%;width:20%;height:90%;border-radius:50%;
+      background:radial-gradient(ellipse at 50% 50%,#f4d3a2 0 24%,#cd9a63 24% 44%,#a2703c 44% 64%,#c69257 64% 80%,#8a5828 80% 100%);
+      box-shadow:inset 0 0 8px rgba(60,30,8,.6)}
+    .boot-log::after{content:"";position:absolute;left:8%;right:26%;top:15%;height:15%;border-radius:999px;
+      background:linear-gradient(90deg,transparent,rgba(255,232,196,.55),transparent)}
+    .boot-knife{position:absolute;right:clamp(0px,2vmin,10px);top:-2%;width:clamp(10px,1.9vmin,14px);height:clamp(64px,12vmin,86px);
+      transform-origin:50% 5%;animation:bootChop 2.9s cubic-bezier(.45,.05,.5,1) infinite}
+    .boot-knife::before{content:"";position:absolute;left:-16%;right:-16%;top:0;height:30%;border-radius:4px 4px 6px 6px;
+      background:linear-gradient(180deg,#a06b38 0%,#7a4c24 55%,#54331a 100%);
+      box-shadow:inset 0 1px 0 rgba(255,220,170,.45),0 1px 3px rgba(0,0,0,.5)}
+    .boot-knife::after{content:"";position:absolute;left:0;right:0;top:30%;bottom:0;
+      background:linear-gradient(90deg,#7d878d 0%,#f3f8fa 38%,#dde6ea 56%,#78828a 100%);
+      clip-path:polygon(0 0,100% 0,100% 76%,50% 100%,0 76%);
+      box-shadow:0 0 12px rgba(200,240,255,.4)}
+    .boot-flash{position:absolute;right:-8%;top:40%;width:46%;height:58%;border-radius:50%;opacity:0;
+      background:radial-gradient(circle,rgba(255,240,190,.95),rgba(255,190,90,.35) 45%,transparent 70%);
+      animation:bootFlash 2.9s linear infinite}
+    .boot-chips i{position:absolute;left:62%;top:56%;width:5px;height:2px;border-radius:2px;background:#e8b782;opacity:0;
+      animation:bootChip 2.9s linear infinite}
+    .boot-chips i:nth-child(2){animation-delay:.02s}
+    .boot-chips i:nth-child(3){animation-delay:.04s}
+    .boot-title{font-family:"Unbounded","Manrope",system-ui,sans-serif;font-weight:900;line-height:1.02;
+      font-size:clamp(26px,6.4vmin,50px);letter-spacing:.02em;white-space:nowrap;text-align:center;color:#fff4de;
+      text-shadow:0 3px 0 #7b3f13,0 12px 30px rgba(255,132,32,.4)}
+    .boot-title span{color:#ffc249}
+    .boot-bar{display:flex;align-items:center;gap:clamp(8px,1.6vmin,14px);width:100%}
+    .boot-track{position:relative;flex:1;height:clamp(15px,2.6vmin,22px);border-radius:999px;overflow:hidden;
+      background:linear-gradient(180deg,#0e1a1c,#27403f);border:1px solid rgba(255,214,160,.18);
+      box-shadow:inset 0 2px 7px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.05)}
+    .boot-track::after{content:"";position:absolute;top:0;bottom:0;width:26%;left:-40%;
+      background:linear-gradient(100deg,transparent,rgba(255,255,255,.26),transparent);
+      animation:bootShine 2.6s ease-in-out infinite}
+    .boot-fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;
+      background:linear-gradient(180deg,#ffe79a 0%,#ffc04a 42%,#ea8420 100%);
+      box-shadow:0 0 16px rgba(255,170,60,.55),inset 0 1px 0 rgba(255,255,255,.7);
+      transition:width .3s cubic-bezier(.22,.9,.3,1)}
+    .boot-fill::after{content:"";position:absolute;inset:0;border-radius:999px;
+      background:repeating-linear-gradient(112deg,rgba(255,255,255,.2) 0 7px,transparent 7px 16px);
+      background-size:32px 100%;animation:bootStripes .7s linear infinite}
+    .boot-pct{flex:none;min-width:3.6em;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;
+      font-size:clamp(16px,2.8vmin,22px);color:#ffd67e;text-shadow:0 0 14px rgba(255,168,60,.5)}
+    .boot-status{font-size:clamp(10px,1.7vmin,13px);letter-spacing:.18em;text-transform:uppercase;
+      color:#8fb6ac;text-align:center;min-height:1.2em}
+    .boot-tip{font-size:clamp(11px,1.9vmin,14px);line-height:1.45;color:#cbe0d6;text-align:center;
+      min-height:2.9em;max-width:34em;opacity:.92}
+    .boot-tip.is-in{animation:bootTipIn .5s ease both}
+    .boot-foot{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;
+      font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,236,205,.34)}
+    .boot-err{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:14px;padding:22px;text-align:center;background:rgba(6,12,13,.86)}
+    .boot-err[hidden]{display:none}
+    .boot-err-t{font-weight:800;letter-spacing:.05em;font-size:clamp(14px,2.4vmin,18px);color:#ffd9a6}
+    .boot-err-s{font-size:clamp(11px,1.8vmin,13px);line-height:1.5;color:#a9c3bb;max-width:30em}
+    .boot-err-b{padding:12px 26px;border:0;border-radius:12px;cursor:pointer;
+      font-family:"Unbounded","Manrope",sans-serif;font-weight:800;font-size:13px;letter-spacing:.1em;color:#2a1a08;
+      background:linear-gradient(180deg,#ffd777,#e0a72c);box-shadow:0 4px 0 #7d5b0f}
+    .boot-err-b:active{transform:translateY(3px);box-shadow:0 1px 0 #7d5b0f}
+    @keyframes bootGlow{0%,100%{opacity:.5}50%{opacity:1}}
+    @keyframes bootSway{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(3deg) translateY(-2px)}}
+    @keyframes bootChop{0%,16%{transform:rotate(-34deg) translateY(-16%)}44%,58%{transform:rotate(0) translateY(0)}100%{transform:rotate(-34deg) translateY(-16%)}}
+    @keyframes bootFlash{0%,43%{opacity:0}50%{opacity:1}63%,100%{opacity:0}}
+    @keyframes bootChip{0%,45%{opacity:0;transform:translate(0,0) rotate(0)}46%{opacity:1}82%,100%{opacity:0;transform:translate(var(--dx,20px),var(--dy,-24px)) rotate(200deg)}}
+    @keyframes bootStripes{to{background-position:32px 0}}
+    @keyframes bootShine{0%,52%{left:-40%}100%{left:130%}}
+    @keyframes bootTipIn{from{opacity:0;transform:translateY(7px)}to{opacity:.92;transform:none}}
+    @keyframes bootShard{0%{opacity:0;transform:translateY(0) rotate(0)}18%{opacity:.5}100%{opacity:0;transform:translateY(-46vh) rotate(240deg)}}
+    @media (prefers-reduced-motion:reduce){
+      .boot-log,.boot-knife,.boot-chips i,.boot-shards i,.boot-track::after,
+      .boot-fill::after,#boot::after{animation:none}
+      .boot-flash{animation:none;opacity:0}
+    }
+  </style>
+  <script>
+    /* ИГРА, А НЕ СТРАНИЦА: ПКМ, выделение текста, драг и автопрокрутка средней
+       кнопкой убиты ещё до загрузки остальных скриптов и на фазе перехвата —
+       никакой другой код это не отменит и ошибка в другом файле этому не мешает */
+    (function () {
+      var off = function (e) { e.preventDefault(); return false; };
+      document.addEventListener("contextmenu", off, true);
+      /* в полях ника и отзыва выделять текст можно — иначе нельзя скопировать
+         ссылку/исправить опечатку; всё остальное по-прежнему не выделяется */
+      document.addEventListener("selectstart", function (e) {
+        var t = e.target;
+        if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+        e.preventDefault();
+        return false;
+      }, true);
+      document.addEventListener("dragstart", off, true);
+      document.addEventListener("mousedown", function (e) {
+        if (e.button === 1) e.preventDefault();
+      }, true);
+    })();
+  </script>
+  <title>БРЕВНО HIT</title>
+  <!-- SDK с async: блокирующий запрос на сторонний домен задерживал первую
+       отрисовку и заставку. js/yandex.js сам ждёт появления window.YaGames. -->
+  <script async src="https://yandex.ru/games/sdk/v2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Шрифты вне критического пути: заставка их не ждёт, текст игры подхватит
+       их позже (display=swap), как только они приедут. -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all';this.onload=null" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link rel="stylesheet" href="css/style.css?v=premium1" />
+  <link rel="stylesheet" href="css/analytics.css?v=reviews3" />
+  <!-- Жёсткая страховка цвета нижнего меню: даже если css/style.css придёт
+       из старого кэша, панель и кнопки не будут чёрными. -->
+  <style id="menuColorFix">
+    #menu .menu-dock { background: #f3efe3 !important; border-color: #e2dac7 !important; }
+    #menu .dock-btn { background: rgba(255, 255, 255, 0.62) !important; color: #20332e !important; }
+    #menu .dock-cap { color: #5d6e68 !important; }
+    #menu .dock-ico { filter: none !important; }
+    #menu .menu-bp {
+      background: linear-gradient(180deg, #fff6d9 0%, #ffe4a6 100%) !important;
+      border-color: #e2b45a !important;
+      color: #3a2a10 !important;
+    }
+    #menu .menu-bp-val { color: #3a2a10 !important; }
+    #menu .menu-bp .menu-xp { background: rgba(90, 58, 6, 0.18) !important; border: 0 !important; }
+    #menu .menu-bp .menu-xp > i { background: #e09a1e !important; }
+    #menu .menu-more-card { background: #f8f6ee !important; border-color: #e2dac7 !important; }
+    #menu .more-item, #menu .more-sound { background: rgba(255, 255, 255, 0.72) !important; color: #20332e !important; }
+    #menu .more-item.on { background: #ffe8b0 !important; color: #5a3a06 !important; }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <!-- ---------- ЭКРАН ЗАГРУЗКИ (js/loader.js) ----------
+       Первый элемент в body и нарисован только инлайновыми стилями из head:
+       ни картинок, ни шрифтов, ни SDK он не ждёт — поэтому виден сразу. -->
+  <div id="boot" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Загрузка игры">
+    <div class="boot-shards" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="boot-mid">
+      <div class="boot-logo" aria-hidden="true">
+        <div class="boot-log"></div>
+        <div class="boot-knife"></div>
+        <div class="boot-flash"></div>
+        <div class="boot-chips"><i style="--dx:26px;--dy:-30px"></i><i style="--dx:-20px;--dy:-26px"></i><i style="--dx:12px;--dy:-40px"></i></div>
+      </div>
+      <div class="boot-title">БРЕВНО <span>HIT</span></div>
+      <div class="boot-bar">
+        <div class="boot-track"><div class="boot-fill" id="bootFill"></div></div>
+        <div class="boot-pct" id="bootPct">0%</div>
+      </div>
+      <div class="boot-status" id="bootStatus">ЗАГРУЖАЕМ ДВИЖОК</div>
+      <div class="boot-tip" id="bootTip" hidden></div>
+    </div>
+    <div class="boot-foot">БРЕВНО HIT</div>
+    <div class="boot-err" id="bootErr" hidden>
+      <div class="boot-err-t">Игра не загрузилась</div>
+      <div class="boot-err-s">Похоже, соединение оборвалось на середине. Нажмите «Обновить» — обычно помогает.</div>
+      <button class="boot-err-b" id="bootReload" type="button">ОБНОВИТЬ</button>
+    </div>
+  </div>
+  <div id="world"><canvas id="c"></canvas></div>
+  <div id="stage">
+  <!-- Единственный счётчик яблок: всегда сверху слева, одинаковый на всех экранах -->
+  <div id="globalApples" class="global-apples" title="Яблоки">
+    <span class="global-apple-ico" id="globalAppleIco" aria-hidden="true"></span>
+    <span class="global-apple-val" id="globalAppleVal">0</span>
+  </div>
+  <!-- Вторая валюта бета-теста: рубли. Выдаются один раз (350), тратятся на
+       Premium и VIP-ножи. -->
+  <div id="globalRubles" class="global-rubles" title="Рубли">
+    <span class="global-ruble-ico" aria-hidden="true">₽</span>
+    <span class="global-ruble-val" id="globalRubleVal">350</span>
+  </div>
+  <div id="hud">
+    <div class="hud-row">
+      <!-- Правая колонка: текущий счёт, разделитель и рекорд. Уровня здесь
+           больше нет (заказчик убрал подпись «УРОВЕНЬ» из боевого HUD).
+           Рекорда ещё нет (save.best = 1, первый забег) — колонка рекорда и
+           разделитель скрыты, справа остаётся одно число счёта. Как только
+           забег перебивает прежний рекорд, вся колонка пропадает и на её месте
+           горит одно крупное число «НОВЫЙ РЕКОРД» (js/hud.js: syncRecordHud). -->
+      <div class="hud-topright">
+        <div class="hud-right" id="hudRight">
+        <div class="hud-col">
+          <div class="hud-big" id="lvlVal">0</div>
+        </div>
+        <div class="hud-sep" aria-hidden="true">|</div>
+        <div class="hud-col hud-col-best">
+          <div class="hud-big hud-big-best" id="bestVal">1</div>
+          <div class="hud-cap hud-cap-best">РЕКОРД</div>
+        </div>
+        <div class="record-mark" id="recordMark" aria-live="polite">
+          <span class="record-mark-glow" aria-hidden="true"></span>
+          <div class="record-mark-box">
+            <span class="record-mark-val" id="recordVal"></span>
+          </div>
+          <span class="record-mark-cap">НОВЫЙ РЕКОРД</span>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-buffs" id="hudBuffs"></div>
+    <div class="bottom-hud">
+      <div class="lives-box" id="livesBox">
+        <div class="lives" id="livesVal" aria-label="Мои жизни"></div>
+      </div>
+    </div>
+  </div>
+  <button id="reviveBtn" class="revive-btn" type="button" hidden><span class="revive-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="2.2" y="4.6" width="19.6" height="14.8" rx="3.2" stroke="currentColor" stroke-width="2.2"/><path d="M10 8.6v6.8l6-3.4z" fill="currentColor"/></svg></span><span class="revive-label">СМОТРЕТЬ РЕКЛАМУ</span></button>
+  <div id="deathWord" class="death-word" hidden>Возродиться за 13 сек рекламы?</div>
+  <button id="deathSkip" class="death-skip" type="button" hidden>Нет, спасибо</button>
+  <div id="exitAsk" class="exit-ask" hidden>
+    <div class="exit-card" id="exitCard">
+      <button class="exit-x" id="exitAskClose" type="button" aria-label="Отмена">✕</button>
+      <div class="exit-title">ВЫЙТИ В МЕНЮ?</div>
+      <div class="exit-sub">Прогресс будет сохранён</div>
+      <button class="exit-yes" id="exitAskYes" type="button">ВЫЙТИ</button>
+    </div>
+  </div>
+  <div id="menu">
+    <div class="menu-bar">
+      <!-- верхняя строка как в Knife Hit: крупная валюта слева, крупный рекорд
+           справа, под рекордом мелко — стадия. Ни плашек, ни полосы: только
+           числа с тенью поверх неба. -->
+      <div class="menu-top" id="menuStats">
+        <div class="menu-right">
+          <div class="menu-best" title="Рекорд — больше всего ножей за забег">
+            <span class="menu-ico">🏆</span>
+            <span class="menu-val menu-val-best" id="menuBestVal">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="sub fail-line" id="menuSub"></div>
+    </div>
+    <div class="menu-play">
+      <div class="loadout" id="loadoutBar"></div>
+    </div>
+    <!-- Нижняя панель: только ежедневные вкладки. -->
+    <div class="menu-dock" role="navigation" aria-label="Меню">
+      <button class="dock-btn" id="rewardsBtn" type="button" title="Награды" aria-label="Награды">
+        <span class="dock-ico" aria-hidden="true">🎁</span>
+        <span class="dock-cap">Награды</span>
+        <span class="dock-badge" id="rewardsBadge" hidden></span>
+      </button>
+      <button class="dock-btn" id="itemsBtn" type="button" title="Ножи" aria-label="Ножи">
+        <span class="dock-ico" aria-hidden="true">🔪</span>
+        <span class="dock-cap">Ножи</span>
+        <span class="dock-badge" id="itemsBadge" hidden></span>
+      </button>
+      <button class="dock-btn" id="lbBtn" type="button" title="Таблица лидеров" aria-label="Таблица лидеров">
+        <span class="dock-ico" aria-hidden="true">🏅</span>
+        <span class="dock-cap">Рейтинг</span>
+      </button>
+    </div>
+    <!-- Кнопка отзыва: всегда доступна из меню. После 4-й игры отзыв
+         запрашивается обязательно (js/analytics.js). -->
+    <button id="reviewBtn" class="menu-review" type="button" title="Написать отзыв об игре">✍ ОТЗЫВ</button>
+    <!-- Premium: на ПК — крупная плашка слева сверху под яблоками, на телефоне —
+         компактная по центру верхней строки. Виден только без подписки. -->
+    <button id="premiumOffer" class="premium-offer" type="button" hidden
+            aria-label="Оформить Premium — без рекламы и +3 золотые жизни">
+      <span class="po-glow" aria-hidden="true"></span>
+      <span class="po-shine" aria-hidden="true"></span>
+      <span class="po-stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="po-crown" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="poCrownGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff7c4"/>
+              <stop offset=".45" stop-color="#ffd45a"/>
+              <stop offset="1" stop-color="#d68a12"/>
+            </linearGradient>
+          </defs>
+          <path d="M7 33.5h34l-3.8-18.2-8.7 7.6L24 9.8l-4.5 13.1-8.7-7.6L7 33.5Z"
+                fill="url(#poCrownGold)" stroke="#6b3d05" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M8.5 37.5h31" stroke="url(#poCrownGold)" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="24" cy="19" r="2.2" fill="#fff9d6"/>
+        </svg>
+      </span>
+      <span class="po-txt">
+        <span class="po-name">PREMIUM</span>
+        <span class="po-sub">без рекламы</span>
+      </span>
+    </button>
+  </div>
+  <!-- Рекламный БАННЕР мастерской «Цап Царапа» (не кнопка с доком):
+       на телефоне — полоса снизу ТОЛЬКО во время игры, на ПК — широкий
+       баннер справа и в меню, и в игре. Premium его полностью скрывает.
+       Вся логика видимости — js/premium.js: premiumSync. -->
+  <a id="adBanner" class="ad-banner" href="https://t.me/gizbzi"
+     target="_blank" rel="noopener" hidden
+     aria-label="Мастерская Цап Царапа в Telegram — подписаться">
+    <span class="adb-bg" aria-hidden="true"></span>
+    <span class="adb-shine" aria-hidden="true"></span>
+    <span class="adb-ad" aria-hidden="true">РЕКЛАМА</span>
+    <span class="adb-art" aria-hidden="true">
+      <svg class="adb-claw" viewBox="0 0 120 120" fill="none">
+        <g stroke="#ffd45a" stroke-width="6" stroke-linecap="round" opacity=".55">
+          <path d="M24 6C38 32 48 60 54 108"/>
+          <path d="M48 4C62 30 72 58 78 106"/>
+          <path d="M72 6C86 32 96 60 102 104"/>
+        </g>
+      </svg>
+      <svg class="adb-paw" viewBox="0 0 64 64" fill="none">
+        <ellipse cx="32" cy="40" rx="13" ry="11" fill="#ffd45a"/>
+        <ellipse cx="15" cy="25" rx="5.4" ry="4.8" fill="#ffd45a"/>
+        <ellipse cx="25.5" cy="17" rx="5.4" ry="4.8" fill="#ffd45a"/>
+        <ellipse cx="38.5" cy="17" rx="5.4" ry="4.8" fill="#ffd45a"/>
+        <ellipse cx="49" cy="25" rx="5.4" ry="4.8" fill="#ffd45a"/>
+        <path d="M11 8 18 18M25 3v8M39 3v8M53 8 46 18" stroke="#3a2306" stroke-width="2" stroke-linecap="round" opacity=".75"/>
+      </svg>
+    </span>
+    <span class="adb-txt">
+      <span class="adb-kicker">TELEGRAM</span>
+      <strong>ЦАП ЦАРАПА</strong>
+      <span class="adb-sub">Ножи ручной работы</span>
+    </span>
+    <span class="adb-cta">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L7.7 12.3 3 10.8c-1-.3-1-1 .2-1.5l17.4-6.7c.9-.3 1.6.2 1.3 1.7Z"/></svg>
+      <span>ПОДПИСАТЬСЯ</span>
+    </span>
+  </a>
+  <!-- Таблица лидеров из главного меню (js/leaderboard.js: openLbMenu). Это НЕ
+       лист: то же окно, что после смерти — тот же тёмный градиент кадра, тот же
+       масштаб --ov и та же таблица .lb/.lb-view/.lb-row по центру. Внутрь
+       lbMenuBody кладётся renderLbSheet(). -->
+  <div id="lbMenu" class="hidden" aria-hidden="true">
+    <button class="lb-menu-x" id="lbMenuClose" type="button" aria-label="Закрыть таблицу">✕</button>
+    <div class="lb-menu-card" id="lbMenuCard">
+      <div class="lb-menu-body" id="lbMenuBody"></div>
+    </div>
+  </div>
+  <!-- Дорожка наград — отдельное прямоугольное окно по центру кадра.
+       Все 20 ячеек видны сразу: без прокрутки, свайпов и каруселей. Каждые
+       4 часа открывается следующая ячейка, каждая 4-я — новый нож. -->
+  <div id="rewardWin" class="hidden" aria-hidden="true">
+    <div class="rw-card">
+      <div class="rw-head">
+        <div class="rw-headline">
+          <div class="rw-title">НАГРАДЫ</div>
+        </div>
+        <button class="rw-x" id="rwClose" type="button" aria-label="Закрыть награды">✕</button>
+      </div>
+      <div class="rw-timer" id="rwTimerBox">
+        <span class="rw-timer-ico" id="rwTimerIco" aria-hidden="true">⏳</span>
+        <span class="rw-timer-col">
+          <span class="rw-timer-txt" id="rwTimer">0:00</span>
+          <span class="rw-timer-cap" id="rwTimerCap">до следующей награды</span>
+        </span>
+      </div>
+      <div class="rw-grid" id="rwGrid"></div>
+      <div class="rw-foot" id="rwFoot" hidden>
+        <button class="rw-claim" id="rwClaim" type="button" hidden>ЗАБРАТЬ НАГРАДУ</button>
+      </div>
+    </div>
+  </div>
+  <!-- Магазин — отдельная сцена поверх меню (js/shop-scene.js: openShopScene).
+       Наборы яблок: единственная валюта игры. -->
+  <div id="shopScene" class="hidden" aria-hidden="true">
+    <div class="shop-card">
+      <div class="shop-head">
+        <div class="shop-title">МАГАЗИН</div>
+        <button class="shop-x" id="shopClose" type="button" aria-label="Закрыть магазин">✕</button>
+      </div>
+      <div class="shop-grid" id="shopGrid"></div>
+      <div class="shop-note" id="shopNote">Демо-оплата: валюта начисляется сразу</div>
+    </div>
+  </div>
+  <!-- Окно смерти: «ПРОИГРЫШ», итог раунда — уровень, ножи за раунд и рекорд
+       (js/stats.js: runStatsHtml) — и таблица лидеров. Возрождение за
+       13-секундный ролик предлагается и на сцене с огромным ножом, и здесь
+       кнопкой под итогом (js/premium.js: showRewardedAd). -->
+  <div id="overlay" class="hidden">
+    <div class="overlay-card">
+      <div class="brand" id="deathBrand">ПРОИГРЫШ</div>
+      <div class="run-stats" id="runStats"></div>
+      <!-- Возрождение за 13-секундный ролик мастерской «Цап Царапа»: доступно
+           и с итога, если игрок не успел нажать на сцене смерти. Premium ролик
+           не отключает — это награда (js/premium.js). -->
+      <button class="death-ad-btn" id="deathAdBtn" type="button">
+        <span class="death-ad-play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2.2" y="4.6" width="19.6" height="14.8" rx="3.2" stroke="currentColor" stroke-width="2.2"/><path d="M10 8.6v6.8l6-3.4z" fill="currentColor"/></svg>
+        </span>
+        <span class="death-ad-txt">СМОТРЕТЬ РЕКЛАМУ · 13 СЕК</span>
+        <span class="death-ad-gift">+2 ЖИЗНИ</span>
+      </button>
+      <!-- Таблица лидеров (js/leaderboard.js): место · ник · ножи за забег.
+           Листается колесом/пальцем; если строка игрока ушла за кадр, у края
+           висит кнопка с его местом — тап плавно возвращает к себе. -->
+      <div class="lb-wrap">
+        <div class="lb" id="deathBoard" hidden>
+          <div class="lb-view" id="deathBoardView">
+            <div class="lb-spot" id="deathBoardSpot" aria-hidden="true"></div>
+            <div class="lb-track" id="deathBoardTrack"></div>
+          </div>
+          <button class="lb-jump" id="deathBoardJump" type="button" hidden>
+            <span class="lb-jump-ar" id="deathBoardJumpAr">↓</span>
+            <span class="lb-jump-num" id="deathBoardJumpNum">#1</span>
+          </button>
+          <button class="lb-top" id="deathBoardTop" type="button" hidden>ТОП-1 ↑</button>
+        </div>
+      </div>
+      <div class="press-hint" id="resumeHint">Нажмите, чтобы продолжить</div>
+    </div>
+  </div>
+  <!-- Ножи (js/knife-book.js): один экран-коллекция вместо книги-разворота.
+       Сверху — название, прогресс и крупный кошелёк яблок. Ниже — лента ножей,
+       а в самом низу вывеска с двумя кнопками: открыть случайный нож и
+       рандомизатор. Открытый нож надевается сразу. -->
+  <div id="book" class="hidden" aria-hidden="true">
+    <div class="kb" id="bookEl" role="dialog" aria-modal="true" aria-label="Коллекция ножей" tabindex="-1">
+      <div class="kb-head">
+        <div class="kb-brand">
+          <span class="kb-title">НОЖИ</span>
+          <span class="kb-prog" id="bookProgress">0 / 0</span>
+        </div>
+        <button class="kb-close" id="bookClose" type="button" aria-label="Закрыть коллекцию">✕</button>
+      </div>
+      <div class="kb-scroll" id="bookScroll"></div>
+      <div class="kb-empty" id="bookEmpty" hidden>Ничего не найдено</div>
+      <!-- нижняя вывеска: две большие кнопки, ничего лишнего -->
+      <div class="kb-dock">
+        <button class="kb-tool kb-unlock" id="bookUnlock" type="button" title="Разблокировать случайный нож">
+          <span class="kb-tool-ico" aria-hidden="true">🔓</span>
+          <span class="kb-tool-txt">Открыть нож</span>
+          <span class="kb-tool-price" id="bookUnlockPrice"></span>
+        </button>
+        <button class="kb-tool" id="bookRnd" type="button" aria-pressed="false" title="Каждый бросок — случайный нож">
+          <span class="kb-tool-ico" aria-hidden="true">🎲</span>
+          <span class="kb-tool-txt">Случайный в руке</span>
+          <span class="kb-tool-flag" id="bookRndFlag" hidden>ВКЛ</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Окно нового ножа: только нож, надпись, «Применить» и крестик. -->
+  <div id="knifeUnlock" aria-live="polite">
+    <div class="ku-card">
+      <button class="ku-close" id="kuClose" type="button" aria-label="Закрыть">✕</button>
+      <canvas class="ku-art" id="kuArt" width="220" height="600"></canvas>
+      <div class="ku-name" id="kuName">Новый нож</div>
+      <button class="ku-apply" id="kuApply" type="button">ПРИМЕНИТЬ</button>
+    </div>
+  </div>
+  <div id="sheetBack"></div>
+  <div id="sheet" class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="sheetTitle">Предметы</div>
+      <button class="sheet-close" id="sheetClose" type="button" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+  <div id="unlockToast" class="unlock-toast"></div>
+  <!-- ================= PREMIUM =================
+       Роскошное окно подписки: картинки + короткий крупный текст, без полотна
+       мелких условий. Логика — js/premium.js. -->
+  <div id="premiumModal" class="premium-modal hidden" aria-hidden="true">
+    <div class="pm-back" id="premiumModalBack"></div>
+    <div class="pm-card" role="dialog" aria-modal="true" aria-label="Premium" tabindex="-1">
+      <button class="pm-x" id="premiumClose" type="button" aria-label="Закрыть">✕</button>
+      <div class="pm-hero">
+        <span class="pm-rays" aria-hidden="true"></span>
+        <svg class="pm-art" viewBox="0 0 360 220" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="pmGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ffcf5a" stop-opacity=".55"/>
+              <stop offset=".6" stop-color="#c47a12" stop-opacity=".18"/>
+              <stop offset="1" stop-color="#c47a12" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="pmGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff8cf"/>
+              <stop offset=".42" stop-color="#ffd45a"/>
+              <stop offset="1" stop-color="#d9870f"/>
+            </linearGradient>
+            <linearGradient id="pmShield" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2d4a3d"/>
+              <stop offset="1" stop-color="#0d1915"/>
+            </linearGradient>
+          </defs>
+          <circle cx="180" cy="112" r="102" fill="url(#pmGlow)"/>
+          <g stroke="#ffe9a8" stroke-width="3" stroke-linecap="round" opacity=".8">
+            <path d="M82 46v16M74 54h16"/>
+            <path d="M278 58v12M272 64h12"/>
+            <path d="M292 142v10M287 147h10"/>
+            <path d="M70 132v10M65 137h10"/>
+          </g>
+          <circle cx="126" cy="34" r="2.6" fill="#fff5c4"/>
+          <circle cx="244" cy="28" r="2" fill="#ffe48a"/>
+          <circle cx="318" cy="98" r="2.4" fill="#fff5c4"/>
+          <path d="M146 72 163 52 180 72 197 52 214 72 207 98H153Z"
+                fill="url(#pmGold)" stroke="#6b3d05" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M155 105h50" stroke="url(#pmGold)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M180 88 242 108v48c0 33-25 50-62 60-37-10-62-27-62-60v-48Z"
+                fill="url(#pmShield)" stroke="url(#pmGold)" stroke-width="4"/>
+          <g fill="url(#pmGold)" stroke="#7a4a05" stroke-width="1.5">
+            <path d="M146 168c-6-5-12-9-12-16a7 7 0 0 1 12-4 7 7 0 0 1 12 4c0 7-6 11-12 16Z"/>
+            <path d="M214 168c-6-5-12-9-12-16a7 7 0 0 1 12-4 7 7 0 0 1 12 4c0 7-6 11-12 16Z"/>
+            <path d="M180 174c-7-5-13-10-13-17a7.5 7.5 0 0 1 13-4.4 7.5 7.5 0 0 1 13 4.4c0 7-6 12-13 17Z"/>
+          </g>
+        </svg>
+        <div class="pm-title">PREMIUM</div>
+        <div class="pm-sub">ИГРА БЕЗ РЕКЛАМЫ</div>
+      </div>
+      <div class="pm-benefits">
+        <div class="pm-benefit">
+          <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="29" fill="rgba(255,255,255,.055)" stroke="rgba(255,214,110,.3)"/>
+            <path d="M18 27v10h6l13 9V18l-13 9h-6Z" fill="#ffd45a" stroke="#7a4a05" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M43 23c3 2 5 5 5 9s-2 7-5 9" stroke="#ffd45a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M13 13 51 51" stroke="#ff6b5a" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          <span>БЕЗ РЕКЛАМЫ</span>
+        </div>
+        <div class="pm-benefit">
+          <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="29" fill="rgba(255,255,255,.055)" stroke="rgba(255,214,110,.3)"/>
+            <g fill="#ffd45a" stroke="#7a4a05" stroke-width="1.5">
+              <path d="M18 34c-4-3-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-4 8-8 11Z"/>
+              <path d="M46 34c-4-3-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-4 8-8 11Z"/>
+              <path d="M32 48c-5-4-10-8-10-14a6.5 6.5 0 0 1 10-4 6.5 6.5 0 0 1 10 4c0 6-5 10-10 14Z"/>
+            </g>
+          </svg>
+          <span>+3 ЗОЛОТЫЕ ЖИЗНИ</span>
+        </div>
+        <div class="pm-benefit">
+          <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="29" fill="rgba(255,255,255,.055)" stroke="rgba(255,214,110,.3)"/>
+            <path d="M18 16h28v20l-7-4-7 4-7-4-7 4V16Z" fill="#ffd45a" stroke="#7a4a05" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 14 50 50" stroke="#ff6b5a" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          <span>БЕЗ БАННЕРОВ</span>
+        </div>
+      </div>
+      <div class="pm-note">Возрождение за рекламу остаётся</div>
+      <button class="pm-buy" id="premiumBuy" type="button">
+        <span class="pm-buy-txt">ОФОРМИТЬ ЗА 149 ₽</span>
+        <span class="pm-buy-sub">PREMIUM</span>
+      </button>
+      <div class="pm-fine">Демо-оплата · подписка активируется сразу</div>
+    </div>
+  </div>
+  <!-- ============= РЕКЛАМА МАСТЕРСКОЙ «ЦАП ЦАРАПА» =============
+       Один и тот же фирменный ролик для межстраничной рекламы и для награды за
+       возрождение. В режиме награды счётчик идёт 13 секунд и сам возвращает в
+       бой (js/premium.js: showRewardedAd). -->
+  <div id="adLayer" class="ad-layer hidden" aria-hidden="true">
+    <div class="ad-shell" id="adShell">
+      <div class="ad-top">
+        <span class="ad-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <ellipse cx="20" cy="24" rx="8.2" ry="7.2" fill="#ffd45a"/>
+            <ellipse cx="9.5" cy="15.5" rx="3.4" ry="3" fill="#ffd45a"/>
+            <ellipse cx="15.8" cy="10.8" rx="3.4" ry="3" fill="#ffd45a"/>
+            <ellipse cx="24.2" cy="10.8" rx="3.4" ry="3" fill="#ffd45a"/>
+            <ellipse cx="30.5" cy="15.5" rx="3.4" ry="3" fill="#ffd45a"/>
+          </svg>
+        </span>
+        <span class="ad-wordmark">
+          <b>МАСТЕРСКАЯ</b>
+          <strong>ЦАП ЦАРАПА</strong>
+        </span>
+        <button class="ad-count" id="adCount" type="button" disabled aria-label="Отсчёт рекламы">13</button>
+      </div>
+      <div class="ad-visual">
+        <svg class="ad-art" viewBox="0 0 360 250" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="adBgGlow" cx="50%" cy="46%" r="60%">
+              <stop offset="0" stop-color="#4a3416"/>
+              <stop offset=".62" stop-color="#1a2822"/>
+              <stop offset="1" stop-color="#0a1210"/>
+            </radialGradient>
+            <linearGradient id="adGold2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff4bd"/>
+              <stop offset=".46" stop-color="#ffd45a"/>
+              <stop offset="1" stop-color="#d8890f"/>
+            </linearGradient>
+            <linearGradient id="adWood2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d29a62"/>
+              <stop offset=".55" stop-color="#a86f38"/>
+              <stop offset="1" stop-color="#6a3c1b"/>
+            </linearGradient>
+            <linearGradient id="adBlade2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#7e8a92"/>
+              <stop offset=".43" stop-color="#f4fbff"/>
+              <stop offset=".62" stop-color="#cdd9df"/>
+              <stop offset="1" stop-color="#6c777e"/>
+            </linearGradient>
+          </defs>
+          <rect width="360" height="250" fill="url(#adBgGlow)"/>
+          <circle cx="180" cy="116" r="94" stroke="url(#adGold2)" stroke-width="2" opacity=".55"/>
+          <circle cx="180" cy="116" r="108" stroke="url(#adGold2)" stroke-width="1" opacity=".22"/>
+          <g stroke="url(#adGold2)" stroke-width="9" stroke-linecap="round" opacity=".82">
+            <path d="M104 48C126 90 141 143 151 201"/>
+            <path d="M142 40C164 85 178 138 187 198"/>
+            <path d="M180 45C202 88 215 138 224 192"/>
+          </g>
+          <rect x="54" y="164" width="252" height="54" rx="27" fill="url(#adWood2)" stroke="#3a1f0c" stroke-width="5"/>
+          <ellipse cx="66" cy="191" rx="24" ry="27" fill="#d6a06a" stroke="#5a3417" stroke-width="5"/>
+          <ellipse cx="66" cy="191" rx="13" ry="14" fill="#a8703c" opacity=".85"/>
+          <path d="M96 174h198" stroke="#ffdf9e" stroke-width="3" opacity=".3"/>
+          <g transform="rotate(14 250 120)">
+            <rect x="241" y="52" width="19" height="74" rx="7" fill="#5a3417" stroke="#2a1405" stroke-width="3"/>
+            <rect x="244" y="58" width="13" height="8" rx="4" fill="#d9a55c"/>
+            <path d="M242 124h16l-5 72h-6Z" fill="url(#adBlade2)" stroke="#eaf8ff" stroke-width="1.4"/>
+          </g>
+          <g fill="#fff3bd" opacity=".9">
+            <circle cx="92" cy="86" r="2.4"/>
+            <circle cx="282" cy="64" r="2"/>
+            <circle cx="300" cy="132" r="2.7"/>
+            <circle cx="76" cy="140" r="1.8"/>
+          </g>
+        </svg>
+        <div class="ad-visual-txt">
+          <span class="ad-kicker" id="adStamp">РЕКЛАМА</span>
+          <div class="ad-headline" id="adHeadline">МАСТЕРСКАЯ<br>ЦАП ЦАРАПА</div>
+          <div class="ad-subline" id="adSubline">Ножи ручной работы</div>
+        </div>
+      </div>
+      <div class="ad-foot">
+        <a class="ad-cta" id="adCta" href="https://t.me/gizbzi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L7.7 12.3 3 10.8c-1-.3-1-1 .2-1.5l17.4-6.7c.9-.3 1.6.2 1.3 1.7Z"/></svg>
+          <span>ПОДПИСАТЬСЯ В TELEGRAM</span>
+        </a>
+        <div class="ad-bar" aria-hidden="true"><span id="adBar"></span></div>
+        <div class="ad-foot-row">
+          <div class="ad-note" id="adNote">Реклама · Мастерская Цап Царапа</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- ================= АНАЛИТИКА: ник и отзыв =================
+       Всё это лежит вне #stage, поэтому клики по полям не бросают нож.
+       Логика — js/analytics.js. -->
+  <div id="nickModal" class="an-modal" hidden aria-hidden="true">
+    <div class="an-card">
+      <div class="an-title">ВВЕДИТЕ СВОЙ НИК</div>
+      <label class="an-label" for="nickInput">Ник</label>
+      <input id="nickInput" class="an-input" type="text" maxlength="20" autocomplete="nickname"
+             spellcheck="false" placeholder="БревноМен" />
+      <div class="an-error" id="nickError"></div>
+      <button id="nickSubmit" class="an-primary" type="button">НАЧАТЬ ИГРАТЬ</button>
+    </div>
+  </div>
+  <div id="reviewModal" class="an-modal" hidden aria-hidden="true">
+    <div class="an-card">
+      <button class="an-x" id="reviewClose" type="button" aria-label="Закрыть">✕</button>
+      <div class="an-kicker">МНЕНИЕ ИГРОКА</div>
+      <div class="an-title">ОБРАТНАЯ СВЯЗЬ</div>
+      <div class="an-sub" id="reviewSub">Выберите тип сообщения.</div>
+      <div class="review-cats" id="reviewCats" role="tablist" aria-label="Тип сообщения">
+        <button type="button" class="review-cat on" data-kind="review">Отзыв</button>
+        <button type="button" class="review-cat" data-kind="bug">Нашёл баг</button>
+        <button type="button" class="review-cat" data-kind="complaint">Жалоба</button>
+        <button type="button" class="review-cat" data-kind="idea">Дать идею</button>
+      </div>
+      <div class="an-stars" id="reviewStars" role="group" aria-label="Оценка от 1 до 5">
+        <button type="button" data-star="1" aria-label="1 звезда">★</button>
+        <button type="button" data-star="2" aria-label="2 звезды">★</button>
+        <button type="button" data-star="3" aria-label="3 звезды">★</button>
+        <button type="button" data-star="4" aria-label="4 звезды">★</button>
+        <button type="button" data-star="5" aria-label="5 звёзд">★</button>
+      </div>
+      <label class="an-label" for="reviewText">Комментарий</label>
+      <textarea id="reviewText" class="an-textarea" maxlength="2000"
+                placeholder="Напишите сообщение…"></textarea>
+      <div class="an-counter" id="reviewCount">0 / 2000</div>
+      <div class="an-error" id="reviewError"></div>
+      <button id="reviewSubmit" class="an-primary" type="button">ОТПРАВИТЬ ОТЗЫВ</button>
+      <div class="an-note">Спасибо! Ваше мнение помогает улучшить игру.</div>
+    </div>
+  </div>
+  <!-- заставка — первым: она ведёт прогресс всех остальных загрузок -->
+  <script src="js/loader.js?v=final5"></script>
+  <script src="js/dom.js?v=final5"></script>
+  <script src="js/supabase-config.js?v=sb1"></script>
+  <script src="js/knife-skins.js?v=final5"></script>
+  <script src="js/state.js?v=final5"></script>
+  <script src="js/shop-items.js?v=final5"></script>
+  <script src="js/themes.js?v=final5"></script>
+  <script src="js/bosses.js?v=final5"></script>
+  <script src="js/boss-config-fixed.js?v=release1"></script>
+  <script src="js/boss-editor.js?v=release1"></script>
+  <script src="js/seq.js?v=final5"></script>
+  <script src="js/math.js?v=final5"></script>
+  <script src="js/pool.js?v=final5"></script>
+  <script src="js/sfx.js?v=final5"></script>
+  <script src="js/knife-paint.js?v=final5"></script>
+  <script src="js/knife.js?v=final5"></script>
+  <script src="js/wood.js?v=final5"></script>
+  <script src="js/shapes.js?v=final5"></script>
+  <script src="js/tex-tomato.js?v=final5"></script>
+  <script src="js/tex-heart.js?v=final5"></script>
+  <script src="js/tex-marmalade.js?v=final5"></script>
+  <script src="js/tex-pumpkin.js?v=final5"></script>
+  <script src="js/tex-saw.js?v=final5"></script>
+  <script src="js/tex-valve.js?v=final5"></script>
+  <script src="js/tex-aegis.js?v=final5"></script>
+  <script src="js/tex-pizza.js?v=final5"></script>
+  <script src="js/tex-donut.js?v=final5"></script>
+  <script src="js/tex-cheese.js?v=final5"></script>
+  <script src="js/tex-helm.js?v=final5"></script>
+  <script src="js/tex-target.js?v=final5"></script>
+  <script src="js/tex-coconut.js?v=final5"></script>
+  <script src="js/tex-egg.js?v=final5"></script>
+  <script src="js/tex-dummy.js?v=final5"></script>
+  <script src="js/tex-fan.js?v=final5"></script>
+  <script src="js/tex-candy.js?v=final5"></script>
+  <script src="js/tex-lifebelt.js?v=final5"></script>
+  <script src="js/tex-pepsi.js?v=final5"></script>
+  <script src="js/tex-reverse.js?v=final5"></script>
+  <script src="js/tex-tire.js?v=final5"></script>
+  <script src="js/tex-coin.js?v=final5"></script>
+  <script src="js/tex-balloon.js?v=final5"></script>
+  <script src="js/tex-pie.js?v=final5"></script>
+  <script src="js/tex-cog.js?v=final5"></script>
+<script src="js/tex-tennis.js?v=final5"></script>
+  <script src="js/tex-basketball.js?v=final5"></script>
+  <script src="js/tex-plate.js?v=final5"></script>
+  <script src="js/tex-tape.js?v=final5"></script>
+  <script src="js/tex-yarn.js?v=final5"></script>
+  <script src="js/tex-compass.js?v=final5"></script>
+  <script src="js/tex-camera.js?v=final5"></script>
+  <script src="js/tex-disco.js?v=final5"></script>
+  <script src="js/image-fit.js?v=final5"></script>
+<script src="js/assets.js?v=final5"></script>
+  <script src="js/layout.js?v=final5"></script>
+  <script src="js/hud.js?v=release1"></script>
+  <script src="js/stats.js?v=final5"></script>
+  <script src="js/leaderboard.js?v=premium1"></script>
+  <script src="js/progress.js?v=final5"></script>
+  <script src="js/knife-unlock.js?v=release1"></script>
+  <script src="js/boss-spin.js?v=final5"></script>
+  <script src="js/hit.js?v=final5"></script>
+  <script src="js/cracks.js?v=final5"></script>
+  <script src="js/fx.js?v=final5"></script>
+  <script src="js/flow.js?v=premium9"></script>
+  <script src="js/sim.js?v=final5"></script>
+  <script src="js/boss-sting.js?v=final5"></script>
+  <script src="js/boss-victory.js?v=final5"></script>
+  <script src="js/draw-knife.js?v=final5"></script>
+  <script src="js/draw-boss.js?v=final5"></script>
+  <script src="js/draw-stuck.js?v=final5"></script>
+  <script src="js/draw-log.js?v=final5"></script>
+  <script src="js/draw-hud.js?v=final5"></script>
+  <script src="js/frame.js?v=final5"></script>
+  <script src="js/mobile.js?v=final5"></script>
+  <script src="js/shop.js?v=final5"></script>
+  <script src="js/rewards.js?v=final5"></script>
+  <script src="js/shop-scene.js?v=final5"></script>
+  <script src="js/knife-book.js?v=final7"></script>
+  <script src="js/input.js?v=final5"></script>
+  <script src="js/exit.js?v=final5"></script>
+  <script src="js/yandex.js?v=final5"></script>
+  <script src="js/premium.js?v=stats2"></script>
+  <!-- Аналитика игры. Загружается последней: к этому моменту есть все
+       игровые функции, которые она оборачивает. -->
+  <script src="js/analytics.js?v=reviews2"></script>
+  <script src="js/replay.js?v=final5"></script>
+  <!-- ============ НАСТРОЙКИ КЛАВИШ БРОСКА (кнопка ⚙) ============
+       Сама кнопка ⚙ спрятана: её место заняла плитка «Клавиши» в панели
+       «Ещё» (js/input.js: keysBtn → kkeysBtn.click()). Панель осталась здесь
+       без изменений. Любое число триггеров броска: любые клавиши и кнопки
+       мыши (ПКМ, ЛКМ, боковые, колесо). По умолчанию — ПКМ и ПРОБЕЛ. Раскладка
+       лежит в localStorage «brevno.knifeKeys.v1». ПКМ и ПРОБЕЛ игра слушает
+       сама, поэтому для них модуль ничего не дублирует; для остальных
+       триггеров он шлёт в документ синтетический keydown «ПРОБЕЛ» — ровно то
+       событие, на которое игра уже умеет метать нож. -->
+  <style>
+  #kkeys{position:fixed;inset:0;pointer-events:none;z-index:9000;font-family:'Manrope',system-ui,sans-serif}
+  #kkeysBtn{position:absolute;right:10px;bottom:10px;width:46px;height:46px;padding:0;border-radius:50%;pointer-events:auto;display:none;align-items:center;justify-content:center;font:400 21px/1 'Manrope',sans-serif;color:#ffe9a8;cursor:pointer;opacity:.85;background:radial-gradient(circle at 50% 28%,#4a3524,#241a12 72%);border:2px solid #c9a227;box-shadow:0 4px 0 #14100c,0 8px 18px rgba(0,0,0,.45);transition:transform .12s,opacity .12s}
+  #kkeysBtn:hover{opacity:1;transform:scale(1.06)}
+  #kkeysBtn:active{transform:translateY(2px) scale(.98)}
+  #kkeysPanel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:auto;background:rgba(8,5,3,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  #kkeysPanel[hidden]{display:none}
+  .kkeys-card{position:relative;width:min(94vw,430px);max-height:calc(100vh - 40px);overflow:auto;padding:20px 18px 16px;border-radius:20px;color:#f3e6cf;background:linear-gradient(170deg,#2a1f16,#17100b 65%);border:2px solid #c9a227;box-shadow:0 18px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,235,180,.18);-webkit-overflow-scrolling:touch}
+  .kkeys-card.capturing{border-color:#4fa8e0;box-shadow:0 18px 40px rgba(0,0,0,.6),0 0 0 3px rgba(79,168,224,.28)}
+  .kkeys-x{position:absolute;top:8px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#c6b195;font-size:18px;line-height:1;cursor:pointer}
+  .kkeys-x:hover{color:#fff}
+  .kkeys-title{font-family:'Unbounded','Manrope',sans-serif;font-weight:800;font-size:17px;letter-spacing:.06em;color:#ffdf8a;text-align:center;padding:0 26px}
+  .kkeys-sub{margin-top:6px;font-size:12px;line-height:1.45;color:#c6b195;text-align:center}
+  .kkeys-list{margin:14px 0 12px;display:flex;flex-direction:column;gap:8px}
+  .kkeys-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;background:rgba(255,235,190,.06);border:1px solid rgba(201,162,39,.35)}
+  .kkeys-tag{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Unbounded','Manrope',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em}
+  .kkeys-note{flex:none;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#9ed08a;border:1px solid rgba(158,208,138,.35);border-radius:999px;padding:2px 6px}
+  .kkeys-del{flex:none;width:28px;height:28px;padding:0;border-radius:50%;border:1px solid rgba(201,162,39,.45);background:rgba(255,235,190,.06);color:#e9d5b0;font-size:13px;line-height:1;cursor:pointer}
+  .kkeys-del:hover{background:#8c2f2f;border-color:#c2453f;color:#fff}
+  .kkeys-empty{margin:6px 0;text-align:center;font-size:12px;color:#a2907a}
+  .kkeys-add,.kkeys-reset{display:block;width:100%;padding:12px;border-radius:12px;cursor:pointer;text-align:center;font-family:'Unbounded','Manrope',sans-serif;font-weight:800;letter-spacing:.08em;text-transform:uppercase;transition:transform .1s,filter .1s}
+  .kkeys-add{font-size:13px;color:#241a12;background:linear-gradient(180deg,#ffd777,#e0a72c);border:2px solid #a67c17;box-shadow:0 4px 0 #7d5b0f}
+  .kkeys-add:active{transform:translateY(3px);box-shadow:0 1px 0 #7d5b0f}
+  .kkeys-card.capturing .kkeys-add{color:#062a44;background:linear-gradient(180deg,#8fd3ff,#2f8fd8);border-color:#1d6ba3;box-shadow:0 4px 0 #14507a;animation:kkeysPulse .9s ease-in-out infinite}
+  @keyframes kkeysPulse{50%{filter:brightness(1.18)}}
+  .kkeys-reset{margin-top:8px;font-size:11px;color:#e8d3ae;background:rgba(255,235,190,.07);border:2px solid rgba(201,162,39,.45);box-shadow:0 4px 0 rgba(0,0,0,.35)}
+  .kkeys-reset:active{transform:translateY(2px);box-shadow:none}
+  </style>
+  <div id="kkeys">
+    <button id="kkeysBtn" type="button" title="Настройки клавиш броска" aria-label="Настройки клавиш броска">⚙</button>
+    <div id="kkeysPanel" hidden>
+      <div class="kkeys-card" id="kkeysCard">
+        <button class="kkeys-x" id="kkeysClose" type="button" aria-label="Закрыть">✕</button>
+        <div class="kkeys-title">КЛАВИШИ БРОСКА</div>
+        <div class="kkeys-sub">Чем метать нож. Добавляй сколько угодно клавиш и кнопок мыши — хоть все.</div>
+        <div class="kkeys-list" id="kkeysList"></div>
+        <button class="kkeys-add" id="kkeysAdd" type="button">+ Добавить триггер</button>
+        <button class="kkeys-reset" id="kkeysReset" type="button">Сброс: ПКМ + пробел</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    "use strict";
+    var STORE = "brevno.knifeKeys.v1";
+    var DEFAULTS = ["mouse:2", "key:Space"];
+    /* Встроенные в игру триггеры: их обработку модуль не дублирует */
+    var BUILTIN = { "mouse:2": 1, "key:Space": 1 };
+    var MODS = { ShiftLeft: 1, ShiftRight: 1, ControlLeft: 1, ControlRight: 1, AltLeft: 1, AltRight: 1, MetaLeft: 1, MetaRight: 1, CapsLock: 1, OSLeft: 1, OSRight: 1 };
+    var NAMES = {
+      Space: "ПРОБЕЛ", Enter: "ENTER", NumpadEnter: "ENTER (NUM)", Escape: "ESC", Tab: "TAB", Backspace: "BACKSPACE",
+      ShiftLeft: "ЛЕВЫЙ SHIFT", ShiftRight: "ПРАВЫЙ SHIFT", ControlLeft: "ЛЕВЫЙ CTRL", ControlRight: "ПРАВЫЙ CTRL",
+      AltLeft: "ЛЕВЫЙ ALT", AltRight: "ПРАВЫЙ ALT", MetaLeft: "WIN", MetaRight: "WIN", ContextMenu: "МЕНЮ",
+      ArrowLeft: "ВЛЕВО", ArrowRight: "ВПРАВО", ArrowUp: "ВВЕРХ", ArrowDown: "ВНИЗ",
+      Insert: "INSERT", Delete: "DELETE", Home: "HOME", End: "END", PageUp: "PAGE UP", PageDown: "PAGE DOWN",
+      PrintScreen: "PRINT SCREEN", ScrollLock: "SCROLL LOCK", Pause: "PAUSE", Minus: "-", Equal: "=",
+      BracketLeft: "[", BracketRight: "]", Backslash: "\\", Semicolon: ";", Quote: "'", Backquote: "`",
+      Comma: ",", Period: ".", Slash: "/"
+    };
+
+    var btn = document.getElementById("kkeysBtn");
+    var panel = document.getElementById("kkeysPanel");
+    var card = document.getElementById("kkeysCard");
+    var list = document.getElementById("kkeysList");
+    var addBtn = document.getElementById("kkeysAdd");
+    var resetBtn = document.getElementById("kkeysReset");
+    var closeBtn = document.getElementById("kkeysClose");
+    if (!btn || !panel || !card || !list || !addBtn || !resetBtn || !closeBtn) return;
+
+    var binds = load();
+    var capturing = false;
+    var lastThrow = 0;
+
+    function load() {
+      var raw = null;
+      try { raw = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { raw = null; }
+      if (!raw || !raw.length) return DEFAULTS.slice();
+      var out = [];
+      for (var i = 0; i < raw.length; i++) {
+        if (typeof raw[i] === "string" && raw[i] && out.indexOf(raw[i]) < 0) out.push(raw[i]);
+      }
+      return out.length ? out : DEFAULTS.slice();
+    }
+    function save() { try { localStorage.setItem(STORE, JSON.stringify(binds)); } catch (e) {} }
+
+    function keyName(code) {
+      if (!code) return "КЛАВИША";
+      if (NAMES[code]) return NAMES[code];
+      if (code.indexOf("Key") === 0) return code.slice(3).toUpperCase();
+      if (code.indexOf("Digit") === 0) return code.slice(5);
+      if (code.indexOf("Numpad") === 0) return "NUM " + code.slice(6).toUpperCase();
+      return code.toUpperCase();
+    }
+    function mouseName(b) {
+      if (b === 0) return "ЛКМ";
+      if (b === 1) return "КОЛЕСО (СКМ)";
+      if (b === 2) return "ПКМ";
+      if (b === 3) return "МЫШЬ 4";
+      if (b === 4) return "МЫШЬ 5";
+      return "МЫШЬ " + (b + 1);
+    }
+    function label(tok) {
+      var p = tok.indexOf(":");
+      if (p < 0) return tok;
+      return tok.slice(0, p) === "mouse" ? mouseName(parseInt(tok.slice(p + 1), 10) || 0) : keyName(tok.slice(p + 1));
+    }
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+    function render() {
+      var html = "";
+      for (var i = 0; i < binds.length; i++) {
+        var tok = binds[i];
+        html += '<div class="kkeys-row"><span class="kkeys-tag">' + esc(label(tok)) + "</span>" +
+          (BUILTIN[tok] ? '<span class="kkeys-note">в игре</span>' : "") +
+          '<button class="kkeys-del" type="button" data-i="' + i + '" aria-label="Убрать">✕</button></div>';
+      }
+      list.innerHTML = html || '<div class="kkeys-empty">Пусто — метнуть нож будет нечем</div>';
+    }
+    function open() { panel.hidden = false; stopCapture(); render(); }
+    function close() { stopCapture(); panel.hidden = true; }
+    function startCapture() {
+      capturing = true;
+      card.classList.add("capturing");
+      addBtn.textContent = "Нажми клавишу или кнопку мыши…";
+    }
+    function stopCapture() {
+      capturing = false;
+      card.classList.remove("capturing");
+      addBtn.textContent = "+ Добавить триггер";
+    }
+    function addBind(tok) {
+      if (!capturing || !tok) return;
+      stopCapture();
+      if (binds.indexOf(tok) < 0 && binds.length < 24) { binds.push(tok); save(); }
+      render();
+    }
+    /* Один синтетический «ПРОБЕЛ» в документ — игра ловит его как живой */
+    function throwKnife() {
+      var now = Date.now();
+      if (now - lastThrow < 40) return;
+      lastThrow = now;
+      var ev;
+      try {
+        ev = new KeyboardEvent("keydown", { key: " ", code: "Space", keyCode: 32, which: 32, bubbles: true, cancelable: true, composed: true });
+      } catch (e1) {
+        ev = document.createEvent("Event");
+        ev.initEvent("keydown", true, true);
+        ev.key = " ";
+        ev.code = "Space";
+      }
+      try { Object.defineProperty(ev, "keyCode", { get: function () { return 32; } }); } catch (e2) {}
+      try { Object.defineProperty(ev, "which", { get: function () { return 32; } }); } catch (e3) {}
+      try { document.dispatchEvent(ev); } catch (e4) {}
+      try { window.dispatchEvent(new CustomEvent("knife:throw")); } catch (e5) {}
+    }
+    function skipTarget(t) {
+      if (!t) return false;
+      if (t.closest) {
+        if (t.closest("#kkeys")) return true;
+        if (t.closest("button, a, input, textarea, select, #sheet, #book, #menu")) return true;
+      }
+      return t.tagName === "BUTTON" || t.tagName === "A";
+    }
+    function isTyping() {
+      var a = document.activeElement;
+      if (!a) return false;
+      var tag = a.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || a.isContentEditable === true;
+    }
+
+    window.addEventListener("keydown", function (e) {
+      if (!panel.hidden) {
+        if (capturing) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.code === "Escape") { stopCapture(); return; }
+          if (e.code && MODS[e.code]) { addBtn.textContent = "Нужна обычная клавиша, не модификатор…"; return; }
+          addBind("key:" + e.code);
+        }
+        return;
+      }
+      var tok = "key:" + (e.code || "");
+      if (binds.indexOf(tok) < 0) {
+        /* встроенный триггер убрали из списка — гасим его для игры */
+        if (BUILTIN[tok]) { e.preventDefault(); e.stopPropagation(); }
+        return;
+      }
+      if (BUILTIN[tok] || e.repeat || isTyping()) return;
+      throwKnife();
+    }, true);
+
+    function onMouse(e) {
+      if (!panel.hidden) {
+        if (capturing) {
+          e.preventDefault();
+          e.stopPropagation();
+          addBind("mouse:" + e.button);
+        }
+        return;
+      }
+      var tok = "mouse:" + e.button;
+      if (BUILTIN[tok] || binds.indexOf(tok) < 0 || skipTarget(e.target)) return;
+      throwKnife();
+    }
+    window.addEventListener("mousedown", onMouse, true);
+    window.addEventListener("pointerdown", onMouse, true);
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (panel.hidden) open(); else close();
+    });
+    closeBtn.addEventListener("click", function (e) { e.preventDefault(); close(); });
+    panel.addEventListener("click", function (e) { if (e.target === panel) close(); });
+    addBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (capturing) stopCapture(); else startCapture();
+    });
+    resetBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      binds = DEFAULTS.slice();
+      save();
+      stopCapture();
+      render();
+    });
+    list.addEventListener("click", function (e) {
+      var d = e.target && e.target.closest ? e.target.closest(".kkeys-del") : null;
+      if (!d) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var i = parseInt(d.getAttribute("data-i"), 10);
+      if (i >= 0 && i < binds.length) { binds.splice(i, 1); save(); render(); }
+    });
+
+    /* Публичный доступ для остального кода игры */
+    window.KnifeKeys = {
+      getAll: function () { return binds.slice(); },
+      setAll: function (arr) { binds = (arr || []).slice(); save(); render(); },
+      reset: function () { binds = DEFAULTS.slice(); save(); render(); },
+      isBound: function (tok) { return binds.indexOf(tok) >= 0; },
+      open: open,
+      close: close
+    };
+
+    render();
+  })();
+  </script>
+</body>
+</html>
+
+
+
+
+
+

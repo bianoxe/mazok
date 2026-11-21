@@ -1,0 +1,11 @@
+# Служебный мусор
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.bak
+
+# Секреты и локальные конфиги
+.env
+.env.*

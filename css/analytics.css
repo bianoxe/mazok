@@ -1,0 +1,500 @@
+/* ============================================================
+   БРЕВНО HIT — СТИЛИ АНАЛИТИКИ, ПРОФИЛЯ И АДМИН-ПАНЕЛИ
+   Отдельный файл, чтобы не трогать огромный style.css.
+   ============================================================ */
+
+/* ---------- вторая валюта: рубли ---------- */
+.global-rubles {
+  position: absolute;
+  top: calc(78px + var(--safe-top, 0px) + var(--crop-y, 0px));
+  left: calc(18px + var(--crop-x, 0px));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 96px;
+  padding: 4px 13px 4px 8px;
+  border: 2px solid #7fb9c4;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #eafcff, #b9e3ea);
+  box-shadow: 0 4px 0 rgba(20, 70, 80, 0.24), 0 8px 18px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  font-family: var(--font-display, "Unbounded", "Manrope", sans-serif);
+}
+.global-ruble-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 900;
+  color: #0d3a44;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #9fd7e2 60%, #63aebb);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 1px 3px rgba(0, 0, 0, .25);
+}
+.global-ruble-val {
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 900;
+  line-height: 1;
+  color: #123c45;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* кнопка отзыва в меню: крупная, стоит над нижней панелью.
+   Размеры умножаем на --px-to-stage, иначе сцена масштабирует кнопку
+   вместе с игрой и она становится крошечной. */
+.menu-review {
+  position: absolute;
+  left: calc(20px * var(--px-to-stage) + var(--crop-x, 0px));
+  bottom: calc(118px * var(--px-to-stage) + var(--safe-bottom, 0px));
+  z-index: 55;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10px * var(--px-to-stage));
+  min-height: calc(62px * var(--px-to-stage));
+  padding: calc(16px * var(--px-to-stage)) calc(28px * var(--px-to-stage));
+  border: calc(3px * var(--px-to-stage)) solid #b98a1d;
+  border-radius: calc(20px * var(--px-to-stage));
+  color: #33220a;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(180deg, #fff4cf, #efcf7a 62%, #e0b154);
+  box-shadow:
+    0 calc(7px * var(--px-to-stage)) 0 #8a6210,
+    0 calc(14px * var(--px-to-stage)) calc(30px * var(--px-to-stage)) rgba(0, 0, 0, .32),
+    inset 0 calc(1px * var(--px-to-stage)) 0 rgba(255, 255, 255, .9);
+  font-family: "Manrope", system-ui, sans-serif;
+  font-weight: 900;
+  font-size: calc(17px * var(--px-to-stage));
+  line-height: 1;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  transition: transform .1s ease, filter .15s ease;
+}
+.menu-review::after {
+  content: "";
+  position: absolute;
+  inset: calc(-3px * var(--px-to-stage));
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(255, 212, 90, 0);
+  transition: box-shadow .2s ease;
+  pointer-events: none;
+}
+.menu-review:hover { filter: brightness(1.05); }
+.menu-review:hover::after { box-shadow: 0 0 calc(22px * var(--px-to-stage)) calc(2px * var(--px-to-stage)) rgba(255, 212, 90, .38); }
+.menu-review:active {
+  transform: translateY(calc(5px * var(--px-to-stage)));
+  box-shadow:
+    0 calc(2px * var(--px-to-stage)) 0 #8a6210,
+    0 calc(4px * var(--px-to-stage)) calc(12px * var(--px-to-stage)) rgba(0, 0, 0, .3),
+    inset 0 calc(1px * var(--px-to-stage)) 0 rgba(255, 255, 255, .9);
+}
+@media (max-width: 640px) {
+  .menu-review {
+    left: calc(12px * var(--px-to-stage) + var(--crop-x, 0px));
+    bottom: calc(128px * var(--px-to-stage) + var(--safe-bottom, 0px));
+    min-height: calc(58px * var(--px-to-stage));
+    padding: calc(15px * var(--px-to-stage)) calc(22px * var(--px-to-stage));
+    border-radius: calc(18px * var(--px-to-stage));
+    font-size: calc(15px * var(--px-to-stage));
+    letter-spacing: .07em;
+  }
+  .global-rubles { top: calc(70px + var(--safe-top, 0px) + var(--crop-y, 0px)); }
+}
+/* низкий ландшафтный экран: та же кнопка, но компактнее и тоже над панелью */
+@media (max-height: 560px) and (orientation: landscape) {
+  .menu-review {
+    bottom: calc(120px * var(--px-to-stage) + var(--safe-bottom, 0px));
+    min-height: calc(48px * var(--px-to-stage));
+    padding: calc(11px * var(--px-to-stage)) calc(18px * var(--px-to-stage));
+    font-size: calc(13px * var(--px-to-stage));
+  }
+}
+
+/* Пункт «Яблоки» в панели Ещё: таймер кулдауна */
+#freeApplesBtn.an-cool { opacity: .62; filter: saturate(.6); }
+#freeApplesBtn.an-cool .more-cap { font-variant-numeric: tabular-nums; }
+
+/* ---------- общие модалки ---------- */
+.an-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 12050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(5, 12, 13, .78);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-family: "Manrope", system-ui, sans-serif;
+  color: #f4e8d2;
+}
+.an-modal[hidden] { display: none; }
+#nickModal { z-index: 12500; }
+.an-modal.is-forced { background: rgba(5, 12, 13, .9); }
+.an-card {
+  position: relative;
+  width: min(94vw, 470px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 24px 22px 20px;
+  border-radius: 22px;
+  border: 2px solid #c9a227;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(255, 205, 90, .14), transparent 70%),
+    linear-gradient(170deg, #2a1f16, #15100b 70%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .65), inset 0 1px 0 rgba(255, 235, 180, .18);
+}
+.an-x {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #c6b195;
+  font-size: 18px;
+  cursor: pointer;
+}
+.an-x:hover { color: #fff; }
+.an-x[hidden] { display: none; }
+.an-kicker {
+  font: 800 10px/1 "Manrope", sans-serif;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #ffcf5a;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.an-title {
+  font-family: "Unbounded", "Manrope", sans-serif;
+  font-weight: 900;
+  font-size: clamp(19px, 5.2vw, 25px);
+  letter-spacing: .03em;
+  text-align: center;
+  color: #ffe6a8;
+  text-shadow: 0 3px 0 rgba(90, 50, 8, .55);
+}
+.an-sub {
+  margin: 9px 0 16px;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #cbb79a;
+}
+.an-label {
+  display: block;
+  margin: 0 2px 6px;
+  font: 800 10px/1 "Manrope", sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #a9c3bb;
+}
+.an-input,
+.an-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid rgba(201, 162, 39, .45);
+  border-radius: 13px;
+  background: rgba(255, 240, 205, .07);
+  color: #fff4de;
+  font: 700 16px/1.4 "Manrope", sans-serif;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.an-input:focus,
+.an-textarea:focus {
+  border-color: #ffd45a;
+  box-shadow: 0 0 0 3px rgba(255, 212, 90, .18);
+}
+.an-textarea {
+  min-height: 116px;
+  resize: vertical;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.an-counter {
+  margin: 5px 2px 0;
+  text-align: right;
+  font-size: 10.5px;
+  color: #8f7c64;
+  font-variant-numeric: tabular-nums;
+}
+.an-primary {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  border: 2px solid #a67c17;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffd777, #e0a72c);
+  box-shadow: 0 4px 0 #7d5b0f;
+  color: #2a1a08;
+  font: 900 13px/1 "Unbounded", "Manrope", sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.an-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 #7d5b0f; }
+.an-primary:disabled { opacity: .6; cursor: default; transform: none; }
+.an-note {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #9c8a72;
+}
+.an-error {
+  min-height: 1.2em;
+  margin: 8px 2px 0;
+  color: #ff9a8a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.an-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 16px;
+}
+.an-stars button {
+  width: 46px;
+  height: 46px;
+  border: 2px solid rgba(201, 162, 39, .35);
+  border-radius: 12px;
+  background: rgba(255, 240, 205, .06);
+  color: #5d523f;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .1s, color .1s, background .1s;
+}
+.an-stars button:hover { transform: translateY(-2px); }
+.an-stars button.on {
+  color: #ffd45a;
+  background: rgba(255, 200, 60, .12);
+  border-color: #ffd45a;
+  text-shadow: 0 0 16px rgba(255, 190, 60, .55);
+}
+
+/* ---------- книга ножей ---------- */
+.kb-head { position: relative; }
+
+/* ---------- демка на настоящем движке ---------- */
+body.bh-replay #exitBtn,
+body.bh-replay #hudToggle,
+body.bh-replay #infLivesHudBtn,
+body.bh-replay #reviveBtn,
+body.bh-replay #deathWord,
+body.bh-replay #deathSkip,
+body.bh-replay #exitAsk,
+body.bh-replay #globalRubles,
+body.bh-replay #menu {
+  display: none !important;
+}
+.replay-hud {
+  position: fixed;
+  left: 50%;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 12550;
+  width: min(96vw, 760px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 222, 160, .28);
+  border-radius: 14px;
+  background: rgba(8, 16, 18, .78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .45);
+  color: #e9f1ed;
+  font-family: "Manrope", system-ui, sans-serif;
+}
+.rh-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 3px;
+  min-width: 0;
+}
+.rh-live {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #a33030;
+  color: #fff;
+  font: 900 8px/1.5 "Manrope", sans-serif;
+  letter-spacing: .14em;
+}
+.rh-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #cfe2dc;
+}
+.rh-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.rh-btn {
+  flex: none;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgba(255, 222, 160, .28);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .06);
+  color: #ffe0a0;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+.rh-btn:hover { background: rgba(255, 255, 255, .12); }
+.rh-play { color: #fff; background: rgba(255, 212, 90, .16); }
+.rh-track {
+  flex: 1;
+  min-width: 100px;
+  height: 7px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .12);
+}
+.rh-track i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd777, #e0a72c);
+}
+.rh-time {
+  flex: none;
+  min-width: 76px;
+  text-align: right;
+  font: 700 10.5px/1 "Manrope", monospace;
+  color: #cfe2dc;
+  font-variant-numeric: tabular-nums;
+}
+.rh-speed { display: inline-flex; gap: 3px; }
+.rh-speed button {
+  padding: 5px 7px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .04);
+  color: #a9c3bb;
+  font: 700 9.5px/1 "Manrope", sans-serif;
+  cursor: pointer;
+}
+.rh-speed button.on { color: #16211f; background: #ffd45a; border-color: #ffd45a; }
+@media (max-width: 620px) {
+  .replay-hud { width: 96vw; padding: 7px 8px; bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+  .rh-time { min-width: 62px; font-size: 9.5px; }
+  .rh-speed button { padding: 4px 5px; font-size: 9px; }
+  .rh-btn { width: 31px; height: 30px; }
+}
+
+
+/* ---------- категории обратной связи ---------- */
+.an-stars[hidden] { display: none; }
+.review-cats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0 16px;
+}
+.review-cat {
+  --cat: 255, 207, 90;
+  --ico: "✍";
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 2px solid rgba(var(--cat), .26);
+  border-radius: 16px;
+  background:
+    radial-gradient(130% 150% at 0% 0%, rgba(var(--cat), .18), transparent 62%),
+    linear-gradient(180deg, rgba(255, 246, 232, .075), rgba(255, 246, 232, .02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 3px 0 rgba(0, 0, 0, .3);
+  color: #efe0c6;
+  font: 800 12px/1.15 "Manrope", system-ui, sans-serif;
+  letter-spacing: .04em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform .12s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.review-cat::before {
+  content: var(--ico);
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(var(--cat), .42), rgba(var(--cat), .16));
+  box-shadow: inset 0 0 0 1px rgba(var(--cat), .46), 0 2px 6px rgba(0, 0, 0, .22);
+  font-size: 19px;
+  line-height: 1;
+  filter: saturate(1.05);
+}
+.review-cat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--cat), .62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 6px 16px rgba(0, 0, 0, .34), 0 0 18px rgba(var(--cat), .16);
+}
+.review-cat:active { transform: translateY(1px); }
+.review-cat.on {
+  border-color: rgb(var(--cat));
+  background: linear-gradient(180deg, rgba(var(--cat), 1), rgba(var(--cat), .74));
+  box-shadow:
+    0 0 0 2px rgba(var(--cat), .22),
+    0 4px 0 rgba(0, 0, 0, .34),
+    0 0 24px rgba(var(--cat), .3),
+    inset 0 1px 0 rgba(255, 255, 255, .45);
+  color: #241505;
+  transform: translateY(-1px);
+}
+.review-cat.on::before {
+  background: rgba(255, 255, 255, .72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85);
+  filter: saturate(1.1) drop-shadow(0 1px 1px rgba(0, 0, 0, .18));
+}
+.review-cat[data-kind="review"]    { --cat: 255, 207, 90;  --ico: "✍"; }
+.review-cat[data-kind="bug"]       { --cat: 236, 96, 82;   --ico: "🐞"; }
+.review-cat[data-kind="complaint"] { --cat: 255, 155, 72;  --ico: "⚠️"; }
+.review-cat[data-kind="idea"]      { --cat: 88, 214, 142;  --ico: "💡"; }
+@media (max-width: 640px) {
+  .review-cats { gap: 8px; }
+  .review-cat {
+    gap: 8px;
+    min-height: 58px;
+    padding: 8px 9px;
+    border-radius: 14px;
+    font-size: 10.5px;
+  }
+  .review-cat::before {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+}
